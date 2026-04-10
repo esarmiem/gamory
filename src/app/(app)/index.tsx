@@ -6,6 +6,8 @@ import { ActivityIndicator, FlatList, View } from 'react-native';
 import { Image, Input, Pressable, Text } from '@/components/ui';
 import { useGames } from '@/features/games/hooks';
 
+const logoGamory = require('../../../icons/icon.png');
+
 function Stars({ value }: { value: number }) {
   return (
     <View className="mt-1 flex-row items-center">
@@ -74,7 +76,14 @@ export default function Dashboard() {
   return (
     <View className="flex-1 bg-neutral-900">
       <View className="bg-primary-900 p-6 pt-12 pb-8">
-        <Text className="mb-2 text-3xl font-bold text-white">Gamory</Text>
+        <View className="mb-2 flex-row items-center gap-3">
+          <Image
+            source={logoGamory}
+            className="size-10 rounded-xl"
+            contentFit="contain"
+          />
+          <Text className="text-3xl font-bold text-white">Gamory</Text>
+        </View>
         <Text className="text-base text-primary-200">
           Lleva control de tus juegos terminados y dales tu rating.
         </Text>
