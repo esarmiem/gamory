@@ -2,6 +2,7 @@
 import type { TextInputProps } from 'react-native';
 import * as React from 'react';
 import { I18nManager, TextInput as NTextInput, StyleSheet, View } from 'react-native';
+import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
 
 import colors from './colors';
@@ -12,13 +13,13 @@ const inputTv = tv({
     container: 'mb-2',
     label: 'text-grey-100 mb-1 text-lg dark:text-neutral-100',
     input:
-      'font-inter mt-0 rounded-xl border-[0.5px] border-neutral-300 bg-neutral-100 px-4 py-3 text-base/5 font-medium dark:border-neutral-700 dark:bg-neutral-800 dark:text-white',
+      'font-inter mt-0 rounded-[18px] border border-transparent bg-neutral-300/70 px-4 py-3.5 text-base font-medium text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white',
   },
 
   variants: {
     focused: {
       true: {
-        input: 'border-neutral-400 dark:border-neutral-300',
+        input: 'border-primary-400 bg-white dark:border-neutral-300',
       },
     },
     error: {
@@ -47,7 +48,15 @@ export type NInputProps = {
 } & TextInputProps;
 
 export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextInput | null> }) {
-  const { label, error, testID, onBlur: onBlurProp, onFocus: onFocusProp, ...inputProps } = props;
+  const {
+    className,
+    label,
+    error,
+    testID,
+    onBlur: onBlurProp,
+    onFocus: onFocusProp,
+    ...inputProps
+  } = props;
   const [isFocussed, setIsFocussed] = React.useState(false);
 
   const onBlur = React.useCallback(
@@ -86,7 +95,7 @@ export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextIn
         testID={testID}
         ref={ref}
         placeholderTextColor={colors.neutral[400]}
-        className={styles.input()}
+        className={twMerge(styles.input(), className)}
         onBlur={onBlur}
         onFocus={onFocus}
         {...inputProps}

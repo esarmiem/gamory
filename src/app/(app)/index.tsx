@@ -1,22 +1,50 @@
 import type { Game } from '@/features/games/types';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { Image, Input, Pressable, Text } from '@/components/ui';
+import { MoreVertical, Search as SearchIcon } from '@/components/ui/icons';
 import { useGames } from '@/features/games/hooks';
 
-const logoGamory = require('../../../icons/icon.png');
+type FilterKey = 'all' | 'favorites' | 'withMetacritic';
+
+const filters: Array<{ key: FilterKey; label: string }> = [
+  { key: 'all', label: 'Todos' },
+  { key: 'favorites', label: 'Favoritos' },
+  { key: 'withMetacritic', label: 'Con Meta' },
+];
 
 function Stars({ value }: { value: number }) {
   return (
-    <View className="mt-1 flex-row items-center">
+    <View className="mt-2 flex-row items-center gap-0.5">
       {[1, 2, 3, 4, 5].map(star => (
-        <Text key={star} className={star <= value ? 'text-amber-400' : 'text-gray-400'}>
+        <Text key={star} className={star <= value ? 'text-primary-600' : 'text-neutral-300'}>
           ★
         </Text>
       ))}
     </View>
+  );
+}
+
+function FilterChip({
+  label,
+  isActive,
+  onPress,
+}: {
+  label: string;
+  isActive: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      className={`rounded-full px-4 py-2 ${isActive ? 'bg-primary-400' : 'bg-white'}`}
+    >
+      <Text className={`text-xs font-bold uppercase ${isActive ? 'text-neutral-900' : 'text-neutral-500'}`}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -26,39 +54,48 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
   return (
     <Pressable
       onPress={onPress}
-      className="m-2 flex-1 overflow-hidden rounded-xl bg-neutral-800"
+      className="mx-1.5 mb-4 flex-1 rounded-[24px] bg-white p-3"
     >
-      <View className="relative aspect-3/4 w-full bg-neutral-700">
+      <View className="relative rounded-[20px] bg-[#171B2C] p-2">
         {game.cover_url
           ? (
-              <Image source={game.cover_url} className="absolute inset-0 size-full" contentFit="cover" />
+              <Image
+                source={game.cover_url}
+                className="aspect-3/4 w-full rounded-[16px]"
+                contentFit="cover"
+              />
             )
           : (
-              <View className="absolute inset-0 flex items-center justify-center bg-neutral-700">
-                <Text className="text-sm text-neutral-400">Sin imagen</Text>
+              <View className="aspect-3/4 items-center justify-center rounded-[16px] bg-neutral-300">
+                <Text className="text-sm text-neutral-500">Sin imagen</Text>
               </View>
             )}
         {game.metacritic
           ? (
-              <View className="absolute top-2 right-2 rounded-sm bg-green-600 px-1.5 py-0.5">
-                <Text className="text-xs font-bold text-white">{game.metacritic}</Text>
+              <View className="absolute top-3 right-3 rounded-xl bg-brand-100 px-2 py-1">
+                <Text className="text-[10px] font-bold text-brand-800">{game.metacritic}</Text>
               </View>
             )
           : null}
       </View>
 
-      <View className="p-3">
-        <Text className="mb-1 text-base font-semibold text-white" numberOfLines={1}>
-          {game.title}
-        </Text>
+      <View className="pt-3">
+        <View className="flex-row items-start justify-between gap-3">
+          <Text className="flex-1 text-base font-semibold text-neutral-900" numberOfLines={1}>
+            {game.title}
+          </Text>
+          <Pressable className="rounded-full p-1">
+            <MoreVertical color="#8B8B8B" />
+          </Pressable>
+        </View>
 
-        <View className="mb-2 flex-row items-center">
+        <View className="mt-1 flex-row items-center">
           {platformLogo
             ? (
                 <Image source={platformLogo} className="mr-2 size-4" contentFit="contain" />
               )
             : null}
-          <Text className="text-xs text-neutral-400" numberOfLines={1}>
+          <Text className="text-xs font-medium tracking-wide text-neutral-500 uppercase" numberOfLines={1}>
             {game.platform?.split(', ')[0] || '-'}
           </Text>
         </View>
@@ -71,65 +108,91 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
 
 export default function Dashboard() {
   const [search, setSearch] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const { games, isLoading } = useGames(search);
+  const filteredGames = useMemo(
+    () =>
+      games.filter((game) => {
+        if (activeFilter === 'favorites')
+          return game.rating >= 4;
+        if (activeFilter === 'withMetacritic')
+          return game.metacritic !== null;
+
+        return true;
+      }),
+    [activeFilter, games],
+  );
 
   return (
-    <View className="flex-1 bg-neutral-900">
-      <View className="bg-primary-900 p-6 pt-12 pb-8">
-        <View className="mb-2 flex-row items-center gap-3">
-          <Image
-            source={logoGamory}
-            className="size-10 rounded-xl"
-            contentFit="contain"
-          />
-          <Text className="text-3xl font-bold text-white">Gamory</Text>
-        </View>
-        <Text className="text-base text-primary-200">
-          Lleva control de tus juegos terminados y dales tu rating.
-        </Text>
-      </View>
-
-      <View className="-mt-5 px-4 pb-4">
-        <View className="rounded-xl bg-neutral-800 p-2 shadow-sm">
-          <Input
-            placeholder="Buscar por nombre o plataforma"
-            value={search}
-            onChangeText={setSearch}
-            className="border-none bg-transparent text-white"
-          />
-        </View>
-      </View>
-
+    <View className="flex-1 bg-neutral-200">
       {isLoading && games.length === 0
         ? (
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color="#ffffff" />
+              <ActivityIndicator size="large" color="#0D5DB8" />
             </View>
           )
         : (
-            <View className="flex-1">
-              <FlatList
-                data={games}
-                keyExtractor={item => item.id.toString()}
-                numColumns={2}
-                contentContainerClassName="p-2 pb-20"
-                ListEmptyComponent={(
-                  <View className="flex-1 items-center justify-center p-8">
-                    <Text className="text-center text-neutral-400">
-                      Aún no hay juegos. Agrega el primero con el botón superior.
+            <FlatList
+              data={filteredGames}
+              keyExtractor={item => item.id.toString()}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              contentContainerClassName="px-4 pb-32 pt-6"
+              ListHeaderComponent={(
+                <View className="pb-5">
+                  <View className="rounded-[20px] bg-brand-600 px-4 py-3.5">
+                    <Text className="text-xs font-bold tracking-[2px] text-brand-100 uppercase">
+                      Dashboard
+                    </Text>
+                    <Text className="mt-1.5 text-2xl/7 font-bold text-white">
+                      Lleva control de tu biblioteca
+                    </Text>
+                    <Text className="mt-1 text-xs text-brand-100" numberOfLines={2}>
+                      Gestiona tus juegos y revisa tus puntuaciones de un vistazo.
                     </Text>
                   </View>
-                )}
-                renderItem={({ item }) => (
-                  <GameCard
-                    game={item}
-                    onPress={() => {
-                      router.push(`/game/${item.id}`);
-                    }}
-                  />
-                )}
-              />
-            </View>
+
+                  <View className="mt-5 flex-row items-center rounded-[18px] bg-white px-4">
+                    <SearchIcon color="#7D7D7D" />
+                    <Input
+                      placeholder="Buscar por nombre o plataforma"
+                      value={search}
+                      onChangeText={setSearch}
+                      className="flex-1 border-0 bg-transparent px-3 py-4 text-neutral-700"
+                    />
+                  </View>
+
+                  <View className="mt-4 flex-row gap-3">
+                    {filters.map(filter => (
+                      <FilterChip
+                        key={filter.key}
+                        label={filter.label}
+                        isActive={activeFilter === filter.key}
+                        onPress={() => setActiveFilter(filter.key)}
+                      />
+                    ))}
+                  </View>
+                </View>
+              )}
+              ListEmptyComponent={(
+                <View className="items-center rounded-[24px] bg-white p-8">
+                  <Text className="text-center text-base font-semibold text-neutral-900">
+                    No hay juegos para este filtro.
+                  </Text>
+                  <Text className="mt-2 text-center text-sm text-neutral-500">
+                    Prueba con otra búsqueda o agrega tu siguiente título desde el botón superior.
+                  </Text>
+                </View>
+              )}
+              renderItem={({ item }) => (
+                <GameCard
+                  game={item}
+                  onPress={() => {
+                    router.push(`/game/${item.id}`);
+                  }}
+                />
+              )}
+            />
           )}
     </View>
   );

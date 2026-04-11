@@ -1,8 +1,6 @@
 import Env from 'env';
-import { useUniwind } from 'uniwind';
 
 import {
-  colors,
   FocusAwareStatusBar,
   ScrollView,
   Text,
@@ -18,10 +16,13 @@ export function SettingsScreen() {
     <>
       <FocusAwareStatusBar />
 
-      <ScrollView>
-        <View className="flex-1 px-4 pt-16">
-          <Text className="text-xl font-bold">
+      <ScrollView className="bg-neutral-200">
+        <View className="flex-1 px-4 pt-6 pb-28">
+          <Text className="text-3xl font-bold text-neutral-900">
             Ajustes
+          </Text>
+          <Text className="mt-2 text-sm text-neutral-500">
+            Personaliza idioma, tema y revisa la información de la app.
           </Text>
           <SettingsContainer title="settings.generale">
             <LanguageItem />

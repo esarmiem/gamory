@@ -11,8 +11,10 @@ type Props = {
 export function SettingsContainer({ children, title }: Props) {
   return (
     <>
-      {title && <Text className="pt-4 pb-2 text-lg" tx={title} />}
-      <View className="rounded-md border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
+      {title && (
+        <Text className="pt-6 pb-3 text-xs font-bold tracking-[2px] text-neutral-500 uppercase" tx={title} />
+      )}
+      <View className="overflow-hidden rounded-[24px] bg-white">
         {children}
       </View>
     </>
