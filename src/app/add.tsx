@@ -43,13 +43,13 @@ function AddGameHeader() {
   return (
     <View className="mb-6 flex-row items-center justify-between rounded-[24px] bg-white px-5 py-4">
       <View className="flex-1 pr-4">
-        <Text className="text-2xl font-bold text-neutral-900">Agregar juego</Text>
+        <Text className="font-heading text-2xl font-bold text-neutral-900">Agregar juego</Text>
         <Text className="mt-1 text-sm text-neutral-500">
           Busca un juego y completa su ficha desde IGDB.
         </Text>
       </View>
       <Pressable onPress={() => router.back()} className="rounded-full bg-primary-100 px-4 py-2">
-        <Text className="font-semibold text-neutral-900">Cerrar</Text>
+        <Text className="font-heading font-semibold text-neutral-900">Cerrar</Text>
       </Pressable>
     </View>
   );
@@ -92,7 +92,7 @@ function SearchSection({
               onPress={() => onApplySuggestion(res)}
               className="border-b border-neutral-200 p-4 last:border-b-0"
             >
-              <Text className="font-semibold text-neutral-900">{res.title}</Text>
+              <Text className="font-heading font-semibold text-neutral-900">{res.title}</Text>
               <Text className="text-xs text-neutral-500">
                 {res.platforms.slice(0, 2).join(', ')}
                 {res.release_year ? ` · ${res.release_year}` : ''}

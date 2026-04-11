@@ -5,7 +5,12 @@
 /* Define your theme in CSS (replaces tailwind.config.js) */
 @theme {
   /* Font families */
-  --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'PlusJakartaSans-Regular', ui-sans-serif, system-ui, sans-serif;
+  --font-sans-medium: 'PlusJakartaSans-Medium', ui-sans-serif, system-ui, sans-serif;
+  --font-sans-semibold: 'PlusJakartaSans-SemiBold', ui-sans-serif, system-ui, sans-serif;
+  --font-sans-bold: 'PlusJakartaSans-Bold', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'SpaceGrotesk-Bold', ui-sans-serif, system-ui, sans-serif;
+  --font-heading-medium: 'SpaceGrotesk-Medium', ui-sans-serif, system-ui, sans-serif;
 
   /* Base colors */
   --color-white: #ffffff;

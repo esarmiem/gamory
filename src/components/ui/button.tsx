@@ -4,11 +4,12 @@ import type { VariantProps } from 'tailwind-variants';
 import * as React from 'react';
 import { ActivityIndicator, Pressable, Text } from 'react-native';
 import { tv } from 'tailwind-variants';
+import { resolveFontFamily, stripFontClasses } from './font-utils';
 
 const button = tv({
   slots: {
     container: 'my-2 flex flex-row items-center justify-center rounded-md px-4',
-    label: 'font-inter text-base font-semibold',
+    label: 'font-heading text-base font-semibold',
     indicator: 'h-6 text-white',
   },
 
@@ -124,7 +125,8 @@ export function Button({ ref, label: text, loading = false, variant = 'default',
                 : (
                     <Text
                       testID={testID ? `${testID}-label` : undefined}
-                      className={styles.label({ className: textClassName })}
+                      className={stripFontClasses(styles.label({ className: textClassName }))}
+                      style={{ fontFamily: resolveFontFamily(styles.label({ className: textClassName }), 'heading') }}
                     >
                       {text}
                     </Text>
