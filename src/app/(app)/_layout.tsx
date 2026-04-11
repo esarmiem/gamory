@@ -47,7 +47,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#8B8B8B',
         tabBarHideOnKeyboard: true,
         tabBarLabelStyle: {
-          fontFamily: 'SpaceGrotesk',
+          fontFamily: 'SpaceGrotesk-Bold',
           fontSize: 11,
           fontWeight: '700',
           textTransform: 'uppercase',
@@ -105,7 +105,7 @@ function CreateNewGameLink() {
   return (
     <Link href="/add" asChild>
       <Pressable className="h-8 min-w-[108px] items-center justify-center rounded-full bg-primary-400 px-4">
-        <Text className="font-heading text-center font-bold text-neutral-900">+ Agregar</Text>
+        <Text className="text-center font-heading font-bold text-neutral-900">+ Agregar</Text>
       </Pressable>
     </Link>
   );

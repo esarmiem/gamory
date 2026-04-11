@@ -5,6 +5,7 @@ import { I18nManager, Text as NNText, StyleSheet } from 'react-native';
 
 import { twMerge } from 'tailwind-merge';
 import { translate } from '@/lib/i18n';
+import { resolveFontFamily, stripFontClasses } from './font-utils';
 
 type Props = {
   className?: string;
@@ -21,8 +22,8 @@ export function Text({
   const textStyle = React.useMemo(
     () =>
       twMerge(
-        'font-sans text-base font-normal text-black dark:text-white',
-        className,
+        'text-base text-black dark:text-white',
+        stripFontClasses(className),
       ),
     [className],
   );
@@ -32,10 +33,11 @@ export function Text({
       StyleSheet.flatten([
         {
           writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+          fontFamily: resolveFontFamily(className),
         },
         style,
       ]) as TextStyle,
-    [style],
+    [className, style],
   );
   return (
     <NNText className={textStyle} style={nStyle} {...props}>

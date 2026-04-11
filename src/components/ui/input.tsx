@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
 
 import colors from './colors';
+import { resolveFontFamily, stripFontClasses } from './font-utils';
 import { Text } from './text';
 
 const inputTv = tv({
@@ -13,7 +14,7 @@ const inputTv = tv({
     container: 'mb-2',
     label: 'text-grey-100 mb-1 text-lg dark:text-neutral-100',
     input:
-      'mt-0 rounded-[18px] border border-transparent bg-neutral-300/70 px-4 py-3.5 font-sans text-base font-medium text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white',
+      'mt-0 rounded-[18px] border border-transparent bg-neutral-300/70 px-4 py-3.5 font-sans-medium text-base text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white',
   },
 
   variants: {
@@ -81,6 +82,15 @@ export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextIn
     disabled: Boolean(props.disabled),
   });
 
+  const inputClassName = React.useMemo(
+    () => twMerge(stripFontClasses(styles.input()), stripFontClasses(className)),
+    [className, styles],
+  );
+  const inputFontFamily = React.useMemo(
+    () => resolveFontFamily(`${styles.input()} ${className ?? ''}`),
+    [className, styles],
+  );
+
   return (
     <View className={styles.container()}>
       {label && (
@@ -95,13 +105,14 @@ export function Input({ ref, ...props }: NInputProps & { ref?: React.Ref<NTextIn
         testID={testID}
         ref={ref}
         placeholderTextColor={colors.neutral[400]}
-        className={twMerge(styles.input(), className)}
+        className={inputClassName}
         onBlur={onBlur}
         onFocus={onFocus}
         {...inputProps}
         style={StyleSheet.flatten([
           { writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
           { textAlign: I18nManager.isRTL ? 'right' : 'left' },
+          { fontFamily: inputFontFamily },
           inputProps.style,
         ])}
       />
