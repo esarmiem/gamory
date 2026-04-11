@@ -41,7 +41,7 @@ function FilterChip({
       onPress={onPress}
       className={`rounded-full px-4 py-2 ${isActive ? 'bg-primary-400' : 'bg-white'}`}
     >
-      <Text className={`text-xs font-bold uppercase ${isActive ? 'text-neutral-900' : 'text-neutral-500'}`}>
+      <Text className={`font-heading text-xs font-bold uppercase ${isActive ? 'text-neutral-900' : 'text-neutral-500'}`}>
         {label}
       </Text>
     </Pressable>
@@ -81,7 +81,7 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
 
       <View className="pt-3">
         <View className="flex-row items-start justify-between gap-3">
-          <Text className="flex-1 text-base font-semibold text-neutral-900" numberOfLines={1}>
+          <Text className="font-heading flex-1 text-base font-semibold text-neutral-900" numberOfLines={1}>
             {game.title}
           </Text>
           <Pressable className="rounded-full p-1">
@@ -141,10 +141,10 @@ export default function Dashboard() {
               ListHeaderComponent={(
                 <View className="pb-5">
                   <View className="rounded-[20px] bg-brand-600 px-4 py-3.5">
-                    <Text className="text-xs font-bold tracking-[2px] text-brand-100 uppercase">
+                    <Text className="font-heading text-xs font-bold tracking-[2px] text-brand-100 uppercase">
                       Dashboard
                     </Text>
-                    <Text className="mt-1.5 text-2xl/7 font-bold text-white">
+                    <Text className="font-heading mt-1.5 text-2xl/7 font-bold text-white">
                       Lleva control de tu biblioteca
                     </Text>
                     <Text className="mt-1 text-xs text-brand-100" numberOfLines={2}>

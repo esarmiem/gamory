@@ -18,7 +18,7 @@ export function SettingsScreen() {
 
       <ScrollView className="bg-neutral-200">
         <View className="flex-1 px-4 pt-6 pb-28">
-          <Text className="text-3xl font-bold text-neutral-900">
+          <Text className="font-heading text-3xl font-bold text-neutral-900">
             Ajustes
           </Text>
           <Text className="mt-2 text-sm text-neutral-500">

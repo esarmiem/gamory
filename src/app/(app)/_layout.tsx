@@ -47,6 +47,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#8B8B8B',
         tabBarHideOnKeyboard: true,
         tabBarLabelStyle: {
+          fontFamily: 'SpaceGrotesk',
           fontSize: 11,
           fontWeight: '700',
           textTransform: 'uppercase',
@@ -95,7 +96,7 @@ function BrandHeader() {
   return (
     <View className="flex-row items-center gap-3">
       <Image source={logoGamory} className="size-8 rounded-lg" contentFit="contain" />
-      <Text className="text-xl font-bold text-neutral-900">Gamory</Text>
+      <Text className="font-heading text-xl font-bold text-neutral-900">Gamory</Text>
     </View>
   );
 }
@@ -104,7 +105,7 @@ function CreateNewGameLink() {
   return (
     <Link href="/add" asChild>
       <Pressable className="h-8 min-w-[108px] items-center justify-center rounded-full bg-primary-400 px-4">
-        <Text className="text-center font-bold text-neutral-900">+ Agregar</Text>
+        <Text className="font-heading text-center font-bold text-neutral-900">+ Agregar</Text>
       </Pressable>
     </Link>
   );

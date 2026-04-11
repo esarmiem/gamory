@@ -38,7 +38,7 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
           <Text className="text-xl text-neutral-900">←</Text>
         </Pressable>
         <Pressable onPress={onDelete} className="rounded-full bg-red-600/80 p-2">
-          <Text className="text-sm font-bold text-white">Eliminar</Text>
+          <Text className="font-heading text-sm font-bold text-white">Eliminar</Text>
         </Pressable>
       </View>
 
@@ -55,7 +55,7 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
               )}
         </View>
         <View className="mb-4 ml-4 flex-1 pr-8">
-          <Text className="text-2xl/7 font-bold text-black" numberOfLines={2} ellipsizeMode="tail">
+          <Text className="font-heading text-2xl/7 font-bold text-black" numberOfLines={2} ellipsizeMode="tail">
             {game.title}
           </Text>
           <Text className="mt-2 text-sm font-semibold text-neutral-700" numberOfLines={1}>
@@ -137,7 +137,7 @@ function ScreenshotSection({ items, title }: MediaSectionProps) {
 
   return (
     <View className="mb-6">
-      <Text className="mb-3 text-lg font-bold text-neutral-900">{title}</Text>
+      <Text className="font-heading mb-3 text-lg font-bold text-neutral-900">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
         {items.map(url => (
           <View key={url} className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-white">
@@ -155,7 +155,7 @@ function VideoSection({ items, title }: MediaSectionProps) {
 
   return (
     <View className="mb-6">
-      <Text className="mb-3 text-lg font-bold text-neutral-900">{title}</Text>
+      <Text className="font-heading mb-3 text-lg font-bold text-neutral-900">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
         {items.map(vid => (
           <Pressable
