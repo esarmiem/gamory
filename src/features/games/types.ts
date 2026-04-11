@@ -2,25 +2,29 @@ export type Game = {
   id: number;
   title: string;
   platform: string;
-  rating: number;
+  rating: number | null;
   cover_url: string | null;
   genre: string | null;
   release_year: number | null;
   metacritic: number | null;
   igdb_id: number | null;
   platform_logo_url: string | null;
+  status: 'completed' | 'in_progress';
+  quick_review: string | null;
 };
 
 export type NewGamePayload = {
   title: string;
   platform: string;
-  rating: number;
+  rating: number | null;
   cover_url: string | null;
   genre: string | null;
   release_year: number | null;
   metacritic: number | null;
   igdb_id: number | null;
   platform_logo_url: string | null;
+  status: 'completed' | 'in_progress';
+  quick_review: string | null;
 };
 
 export type IgdbSuggestion = {

@@ -1,10 +1,11 @@
-import type { Game, IgdbGameDetails } from '@/features/games/types';
+import type { Game } from '@/features/games/types';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { ActivityIndicator, Linking, ScrollView, View } from 'react-native';
-import { Button, Image, Pressable, Text } from '@/components/ui';
-import { getIgdbGameDetails } from '@/lib/api/igdb';
+import { ActivityIndicator, Linking, ScrollView, TextInput, View } from 'react-native';
+import { Button, Image, Modal, Pressable, Text, useModal } from '@/components/ui';
+import { useGames, useIgdbDetails } from '@/features/games/hooks';
 import { deleteGame, getGameById } from '@/lib/db';
 
 type HeroSectionProps = {
@@ -33,7 +34,7 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
       )}
       <View className="absolute inset-0 bg-white/45" />
 
-      <View className="absolute top-10 right-4 left-4 flex-row items-center justify-between">
+      <View className="absolute inset-x-4 top-10 flex-row items-center justify-between">
         <Pressable onPress={() => router.back()} className="rounded-full bg-white/90 p-2">
           <Text className="text-xl text-neutral-900">←</Text>
         </Pressable>
@@ -92,7 +93,10 @@ function InfoChips({ game }: { game: Game }) {
   );
 }
 
-function RatingCard({ rating }: { rating: number }) {
+function RatingCard({ rating, quickReview }: { rating: number | null; quickReview?: string | null }) {
+  if (rating === null)
+    return null;
+
   return (
     <View className="mb-6 rounded-xl bg-white p-4">
       <Text className="mb-2 text-sm text-neutral-500">Tu Calificación</Text>
@@ -109,6 +113,17 @@ function RatingCard({ rating }: { rating: number }) {
           ))}
         </View>
       </View>
+      {quickReview
+        ? (
+            <View className="mt-4 border-t border-neutral-100 pt-4">
+              <Text className="text-sm text-neutral-600 italic">
+                "
+                {quickReview}
+                "
+              </Text>
+            </View>
+          )
+        : null}
     </View>
   );
 }
@@ -137,7 +152,7 @@ function ScreenshotSection({ items, title }: MediaSectionProps) {
 
   return (
     <View className="mb-6">
-      <Text className="font-heading mb-3 text-lg font-bold text-neutral-900">{title}</Text>
+      <Text className="mb-3 font-heading text-lg font-bold text-neutral-900">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
         {items.map(url => (
           <View key={url} className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-white">
@@ -155,7 +170,7 @@ function VideoSection({ items, title }: MediaSectionProps) {
 
   return (
     <View className="mb-6">
-      <Text className="font-heading mb-3 text-lg font-bold text-neutral-900">{title}</Text>
+      <Text className="mb-3 font-heading text-lg font-bold text-neutral-900">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
         {items.map(vid => (
           <Pressable
@@ -180,11 +195,74 @@ function VideoSection({ items, title }: MediaSectionProps) {
   );
 }
 
+function CompleteGameModal({
+  modal,
+  game,
+  onCompleteGame,
+  isSaving,
+  rating,
+  setRating,
+  review,
+  setReview,
+}: any) {
+  return (
+    <Modal ref={modal.ref} snapPoints={['80%']} title="Completar Juego">
+      <View className="p-6">
+        <Text className="mb-4 text-center font-heading text-lg font-bold text-neutral-900">
+          ¡Felicidades por terminar
+          {' '}
+          {game.title}
+          !
+        </Text>
+
+        <Text className="mb-2 text-center text-sm font-semibold text-neutral-500">
+          ¿Qué calificación le das?
+        </Text>
+        <View className="mb-6 flex-row justify-center gap-3">
+          {[1, 2, 3, 4, 5].map(star => (
+            <Pressable key={star} onPress={() => setRating(star)} className="p-2">
+              <Text className={`text-4xl ${rating && star <= rating ? 'text-primary-500' : 'text-neutral-200'}`}>
+                ★
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <Text className="mb-2 text-sm font-semibold text-neutral-500">
+          Reseña rápida (Opcional)
+        </Text>
+        <TextInput
+          value={review}
+          onChangeText={setReview}
+          placeholder='"Una experiencia increíble..."'
+          placeholderTextColor="#9CA3AF"
+          multiline
+          numberOfLines={3}
+          className="mb-6 min-h-[80px] rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700 italic"
+          style={{ textAlignVertical: 'top' }}
+        />
+
+        <Button
+          label={isSaving ? 'Guardando...' : 'Marcar como Completado'}
+          onPress={onCompleteGame}
+          disabled={!rating || isSaving}
+          className={`rounded-full ${rating && !isSaving ? 'bg-primary-400' : 'bg-neutral-300'}`}
+          textClassName="text-neutral-900"
+        />
+      </View>
+    </Modal>
+  );
+}
+
 export default function GameDetailScreen() {
   const { id } = useLocalSearchParams();
   const [game, setGame] = useState<Game | null>(null);
-  const [details, setDetails] = useState<IgdbGameDetails | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { handleCompleteGame } = useGames();
+
+  const modal = useModal();
+  const [rating, setRating] = useState<number | null>(null);
+  const [review, setReview] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!id)
@@ -193,28 +271,7 @@ export default function GameDetailScreen() {
     setGame(found);
   }, [id]);
 
-  useEffect(() => {
-    async function loadDetails() {
-      if (!game?.igdb_id) {
-        setIsLoading(false);
-        return;
-      }
-      try {
-        const data = await getIgdbGameDetails(game.igdb_id);
-        setDetails(data);
-      }
-      catch (err) {
-        console.error('Error fetching game details:', err);
-      }
-      finally {
-        setIsLoading(false);
-      }
-    }
-
-    if (game) {
-      loadDetails();
-    }
-  }, [game]);
+  const { details, isLoading } = useIgdbDetails(game?.igdb_id);
 
   if (!game) {
     return (
@@ -238,20 +295,61 @@ export default function GameDetailScreen() {
     router.back();
   }
 
-  return (
-    <View className="flex-1 bg-neutral-200">
-      <ScrollView contentContainerClassName="pb-10">
-        <HeroSection bannerUrl={bannerUrl} developer={developer} game={game} onDelete={handleDelete} />
+  async function onCompleteGame() {
+    if (!rating)
+      return;
+    setIsSaving(true);
+    try {
+      await handleCompleteGame(game!.id, rating, review.trim() || null);
+      const updated = getGameById(game!.id);
+      setGame(updated);
+      modal.dismiss();
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setIsSaving(false);
+    }
+  }
 
-        {/* Content */}
-        <View className="mt-14 px-4">
-          <InfoChips game={game} />
-          <RatingCard rating={game.rating} />
-          <MetaInfoSection isLoading={isLoading} languages={languages} multiplayer={multiplayer} />
-          <ScreenshotSection items={screenshots} title="Capturas" />
-          <VideoSection items={videos} title="Videos" />
-        </View>
-      </ScrollView>
-    </View>
+  return (
+    <BottomSheetModalProvider>
+      <View className="flex-1 bg-neutral-200">
+        <ScrollView contentContainerClassName="pb-10">
+          <HeroSection bannerUrl={bannerUrl} developer={developer} game={game} onDelete={handleDelete} />
+
+          {/* Content */}
+          <View className="mt-14 px-4">
+            <InfoChips game={game} />
+
+            {game.status === 'in_progress' && (
+              <Pressable
+                onPress={() => modal.present()}
+                className="mb-6 items-center justify-center rounded-xl bg-primary-400 p-4"
+              >
+                <Text className="font-heading font-bold text-neutral-900">Completar juego</Text>
+              </Pressable>
+            )}
+
+            <RatingCard rating={game.rating} quickReview={game.quick_review} />
+            <MetaInfoSection isLoading={isLoading} languages={languages} multiplayer={multiplayer} />
+            <ScreenshotSection items={screenshots} title="Capturas" />
+            <VideoSection items={videos} title="Videos" />
+          </View>
+        </ScrollView>
+
+        <CompleteGameModal
+          modal={modal}
+          game={game}
+          onCompleteGame={onCompleteGame}
+          isSaving={isSaving}
+          rating={rating}
+          setRating={setRating}
+          review={review}
+          setReview={setReview}
+        />
+      </View>
+    </BottomSheetModalProvider>
   );
 }

@@ -4,15 +4,15 @@ import { useMemo, useState } from 'react';
 
 import { ActivityIndicator, FlatList, View } from 'react-native';
 import { Image, Input, Pressable, Text } from '@/components/ui';
-import { MoreVertical, Search as SearchIcon } from '@/components/ui/icons';
+import { CheckCircle, PlayCircle, Search as SearchIcon } from '@/components/ui/icons';
 import { useGames } from '@/features/games/hooks';
 
-type FilterKey = 'all' | 'favorites' | 'withMetacritic';
+type FilterKey = 'all' | 'favorites' | 'inProgress';
 
 const filters: Array<{ key: FilterKey; label: string }> = [
   { key: 'all', label: 'Todos' },
   { key: 'favorites', label: 'Favoritos' },
-  { key: 'withMetacritic', label: 'Con Meta' },
+  { key: 'inProgress', label: 'En curso' },
 ];
 
 function Stars({ value }: { value: number }) {
@@ -84,23 +84,23 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
           <Text className="flex-1 font-heading text-base font-semibold text-neutral-900" numberOfLines={1}>
             {game.title}
           </Text>
-          <Pressable className="rounded-full p-1">
-            <MoreVertical color="#8B8B8B" />
-          </Pressable>
+          <View className="p-1">
+            {game.status === 'completed' ? <CheckCircle color="#10B981" width={18} height={18} /> : <PlayCircle color="#F59E0B" width={18} height={18} />}
+          </View>
         </View>
 
-        <View className="mt-1 flex-row items-center">
+        <View className="mt-1 flex-row items-center pr-2">
           {platformLogo
             ? (
-                <Image source={platformLogo} className="mr-2 size-4" contentFit="contain" />
+                <Image source={platformLogo} className="mr-2 size-4 shrink-0" contentFit="contain" />
               )
             : null}
-          <Text className="text-xs font-medium tracking-wide text-neutral-500 uppercase" numberOfLines={1}>
+          <Text className="flex-1 text-xs font-medium tracking-wide text-neutral-500 uppercase" numberOfLines={1}>
             {game.platform?.split(', ')[0] || '-'}
           </Text>
         </View>
 
-        <Stars value={game.rating} />
+        {game.rating !== null ? <Stars value={game.rating} /> : <View className="mt-2 h-4" />}
       </View>
     </Pressable>
   );
@@ -114,9 +114,9 @@ export default function Dashboard() {
     () =>
       games.filter((game) => {
         if (activeFilter === 'favorites')
-          return game.rating >= 4;
-        if (activeFilter === 'withMetacritic')
-          return game.metacritic !== null;
+          return game.rating === 5;
+        if (activeFilter === 'inProgress')
+          return game.status === 'in_progress';
 
         return true;
       }),

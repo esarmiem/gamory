@@ -10,6 +10,7 @@ import Animated, {
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
+  progress?: number;
   initialProgress?: number;
   className?: string;
 };
@@ -18,8 +19,17 @@ export type ProgressBarRef = {
   setProgress: (value: number) => void;
 };
 
-export function ProgressBar({ ref, initialProgress = 0, className = '' }: Props & { ref?: React.RefObject<ProgressBarRef | null> }) {
-  const progress = useSharedValue<number>(initialProgress ?? 0);
+export function ProgressBar({ ref, progress: progressProp, initialProgress = 0, className = '' }: Props & { ref?: React.RefObject<ProgressBarRef | null> }) {
+  const progress = useSharedValue<number>(progressProp ?? initialProgress ?? 0);
+
+  React.useEffect(() => {
+    if (progressProp !== undefined) {
+      progress.value = withTiming(progressProp, {
+        duration: 250,
+        easing: Easing.inOut(Easing.quad),
+      });
+    }
+  }, [progressProp, progress]);
   useImperativeHandle(ref, () => {
     return {
       setProgress: (value: number) => {
