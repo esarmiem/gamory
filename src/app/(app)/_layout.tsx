@@ -3,10 +3,6 @@ import * as React from 'react';
 import { useCallback, useEffect } from 'react';
 
 import { Image, Pressable, Text, View } from '@/components/ui';
-import {
-  Home as HomeIcon,
-  Settings as SettingsIcon,
-} from '@/components/ui/icons';
 
 const logoGamory = require('../../../icons/icon.png');
 
@@ -53,15 +49,7 @@ export default function TabLayout() {
           textTransform: 'uppercase',
         },
         tabBarStyle: {
-          height: 68,
-          borderTopWidth: 1,
-          borderTopColor: '#E2E2E2',
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          backgroundColor: '#FFFFFF',
-          paddingTop: 8,
-          paddingBottom: 8,
-          overflow: 'hidden',
+          display: 'none',
         },
         tabBarItemStyle: {
           borderRadius: 14,
@@ -70,6 +58,8 @@ export default function TabLayout() {
         },
       }}
     >
+      {/*
+      Configuracion original visible de tabs.
       <Tabs.Screen
         name="index"
         options={{
@@ -86,6 +76,21 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarButtonTestID: 'settings-tab',
+        }}
+      />
+      */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
+          headerRight: () => <CreateNewGameLink />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          href: null,
+          headerShown: false,
         }}
       />
     </Tabs>
