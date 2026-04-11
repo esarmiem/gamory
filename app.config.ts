@@ -36,7 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'obytesapp',
   version: Env.EXPO_PUBLIC_VERSION.toString(),
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: './icons/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {
@@ -55,13 +55,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
+      foregroundImage: './icons/android/mipmap-xxxhdpi/ic_launcher_foreground.png',
       backgroundColor: '#2E3C4B',
     },
     package: Env.EXPO_PUBLIC_PACKAGE,
   },
   web: {
-    favicon: './assets/favicon.png',
+    favicon: './icons/64x64.png',
     bundler: 'metro',
   },
   plugins: [
@@ -69,7 +69,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-splash-screen',
       {
         backgroundColor: '#2E3C4B',
-        image: './assets/splash-icon.png',
+        image: './icons/icon.png',
         imageWidth: 150,
       },
     ],
@@ -116,7 +116,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
     'expo-secure-store',
-    'expo-sqlite'
+    'expo-sqlite',
   ],
   extra: {
     eas: {
