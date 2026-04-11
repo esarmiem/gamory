@@ -1,5 +1,5 @@
-import Env from 'env';
 import type { IgdbGameDetails, IgdbSuggestion } from '@/features/games/types';
+import Env from 'env';
 
 const EMBEDDED_IGDB_CLIENT_ID = Env.EXPO_PUBLIC_IGDB_CLIENT_ID;
 const EMBEDDED_IGDB_CLIENT_SECRET = Env.EXPO_PUBLIC_IGDB_CLIENT_SECRET;

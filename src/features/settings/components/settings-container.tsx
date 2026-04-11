@@ -12,7 +12,7 @@ export function SettingsContainer({ children, title }: Props) {
   return (
     <>
       {title && (
-        <Text className="font-heading pt-6 pb-3 text-xs font-bold tracking-[2px] text-neutral-500 uppercase" tx={title} />
+        <Text className="pt-6 pb-3 font-heading text-xs font-bold tracking-[2px] text-neutral-500 uppercase" tx={title} />
       )}
       <View className="overflow-hidden rounded-[24px] bg-white">
         {children}
