@@ -89,13 +89,13 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
           </View>
         </View>
 
-        <View className="mt-1 flex-row items-center">
+        <View className="mt-1 flex-row items-center pr-2">
           {platformLogo
             ? (
-                <Image source={platformLogo} className="mr-2 size-4" contentFit="contain" />
+                <Image source={platformLogo} className="mr-2 size-4 shrink-0" contentFit="contain" />
               )
             : null}
-          <Text className="text-xs font-medium tracking-wide text-neutral-500 uppercase" numberOfLines={1}>
+          <Text className="flex-1 text-xs font-medium tracking-wide text-neutral-500 uppercase" numberOfLines={1}>
             {game.platform?.split(', ')[0] || '-'}
           </Text>
         </View>
