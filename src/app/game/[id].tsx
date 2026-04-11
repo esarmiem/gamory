@@ -1,4 +1,5 @@
 import type { Game } from '@/features/games/types';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -33,7 +34,7 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
       )}
       <View className="absolute inset-0 bg-white/45" />
 
-      <View className="absolute top-10 right-4 left-4 flex-row items-center justify-between">
+      <View className="absolute inset-x-4 top-10 flex-row items-center justify-between">
         <Pressable onPress={() => router.back()} className="rounded-full bg-white/90 p-2">
           <Text className="text-xl text-neutral-900">←</Text>
         </Pressable>
@@ -205,7 +206,7 @@ function CompleteGameModal({
   setReview,
 }: any) {
   return (
-    <Modal ref={modal.ref} snapPoints={['65%']} title="Completar Juego">
+    <Modal ref={modal.ref} snapPoints={['80%']} title="Completar Juego">
       <View className="p-6">
         <Text className="mb-4 text-center font-heading text-lg font-bold text-neutral-900">
           ¡Felicidades por terminar
@@ -313,40 +314,42 @@ export default function GameDetailScreen() {
   }
 
   return (
-    <View className="flex-1 bg-neutral-200">
-      <ScrollView contentContainerClassName="pb-10">
-        <HeroSection bannerUrl={bannerUrl} developer={developer} game={game} onDelete={handleDelete} />
+    <BottomSheetModalProvider>
+      <View className="flex-1 bg-neutral-200">
+        <ScrollView contentContainerClassName="pb-10">
+          <HeroSection bannerUrl={bannerUrl} developer={developer} game={game} onDelete={handleDelete} />
 
-        {/* Content */}
-        <View className="mt-14 px-4">
-          <InfoChips game={game} />
+          {/* Content */}
+          <View className="mt-14 px-4">
+            <InfoChips game={game} />
 
-          {game.status === 'in_progress' && (
-            <Pressable
-              onPress={() => modal.present()}
-              className="mb-6 items-center justify-center rounded-xl bg-primary-400 p-4"
-            >
-              <Text className="font-heading font-bold text-neutral-900">Completar juego</Text>
-            </Pressable>
-          )}
+            {game.status === 'in_progress' && (
+              <Pressable
+                onPress={() => modal.present()}
+                className="mb-6 items-center justify-center rounded-xl bg-primary-400 p-4"
+              >
+                <Text className="font-heading font-bold text-neutral-900">Completar juego</Text>
+              </Pressable>
+            )}
 
-          <RatingCard rating={game.rating} quickReview={game.quick_review} />
-          <MetaInfoSection isLoading={isLoading} languages={languages} multiplayer={multiplayer} />
-          <ScreenshotSection items={screenshots} title="Capturas" />
-          <VideoSection items={videos} title="Videos" />
-        </View>
-      </ScrollView>
+            <RatingCard rating={game.rating} quickReview={game.quick_review} />
+            <MetaInfoSection isLoading={isLoading} languages={languages} multiplayer={multiplayer} />
+            <ScreenshotSection items={screenshots} title="Capturas" />
+            <VideoSection items={videos} title="Videos" />
+          </View>
+        </ScrollView>
 
-      <CompleteGameModal
-        modal={modal}
-        game={game}
-        onCompleteGame={onCompleteGame}
-        isSaving={isSaving}
-        rating={rating}
-        setRating={setRating}
-        review={review}
-        setReview={setReview}
-      />
-    </View>
+        <CompleteGameModal
+          modal={modal}
+          game={game}
+          onCompleteGame={onCompleteGame}
+          isSaving={isSaving}
+          rating={rating}
+          setRating={setRating}
+          review={review}
+          setReview={setReview}
+        />
+      </View>
+    </BottomSheetModalProvider>
   );
 }
