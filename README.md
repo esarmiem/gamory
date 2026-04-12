@@ -1,5 +1,6 @@
 <h1 align="center">
-  <img alt="Gamory logo" src="./assets/icon.png" width="124px" style="border-radius:10px"/><br/>
+  <br/>
+  <img width="1920" height="1440" alt="gamory" src="https://github.com/user-attachments/assets/0b1d277b-f8a7-4cb5-8db1-38fbbb33d41d" />
   Gamory
 </h1>
 
