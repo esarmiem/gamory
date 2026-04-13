@@ -2,9 +2,9 @@ import type { Game } from '@/features/games/types';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
 import { AnimatePresence, MotiView } from 'moti';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { ActivityIndicator, Linking, Modal as RNModal, ScrollView, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Linking, Modal as RNModal, ScrollView, TextInput, useWindowDimensions, View } from 'react-native';
 import { Button, Image, Modal, Pressable, Text, useModal } from '@/components/ui';
 import { useGames, useIgdbDetails } from '@/features/games/hooks';
 import { deleteGame, getGameById } from '@/lib/db';
@@ -80,6 +80,101 @@ function CoverPreviewOverlay({
   );
 }
 
+function ScreenshotCarouselOverlay({
+  isVisible,
+  items,
+  activeIndex,
+  onIndexChange,
+  onClose,
+}: {
+  isVisible: boolean;
+  items: string[];
+  activeIndex: number;
+  onIndexChange: (index: number) => void;
+  onClose: () => void;
+}) {
+  const { width } = useWindowDimensions();
+  const listRef = useRef<FlatList<string>>(null);
+  const frameWidth = Math.max(width - 32, 280);
+
+  useEffect(() => {
+    if (!isVisible)
+      return;
+
+    requestAnimationFrame(() => {
+      listRef.current?.scrollToIndex({ index: activeIndex, animated: false });
+    });
+  }, [activeIndex, isVisible]);
+
+  return (
+    <RNModal
+      visible={isVisible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onClose}
+    >
+      <AnimatePresence>
+        {isVisible
+          ? (
+              <Pressable onPress={onClose} className="flex-1 items-center justify-center bg-black/85 px-4">
+                <MotiView
+                  from={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ type: 'timing', duration: 220 }}
+                  className="w-full items-center"
+                >
+                  <Pressable onPress={() => {}} className="w-full items-center">
+                    <FlatList
+                      ref={listRef}
+                      data={items}
+                      keyExtractor={(item, index) => `${item}-${index}`}
+                      horizontal
+                      pagingEnabled
+                      initialScrollIndex={activeIndex}
+                      showsHorizontalScrollIndicator={false}
+                      getItemLayout={(_, index) => ({
+                        length: frameWidth,
+                        offset: frameWidth * index,
+                        index,
+                      })}
+                      onMomentumScrollEnd={(event) => {
+                        const nextIndex = Math.round(
+                          event.nativeEvent.contentOffset.x / frameWidth,
+                        );
+                        onIndexChange(nextIndex);
+                      }}
+                      renderItem={({ item }) => (
+                        <Pressable onPress={onClose} style={{ width: frameWidth }} className="items-center justify-center">
+                          <View
+                            className="overflow-hidden rounded-[28px] bg-neutral-900 shadow-2xl"
+                            style={{ width: frameWidth - 16, aspectRatio: 16 / 10 }}
+                          >
+                            <Image source={item} className="size-full" contentFit="contain" />
+                          </View>
+                        </Pressable>
+                      )}
+                    />
+
+                    <View className="mt-5 flex-row items-center gap-2">
+                      {items.map((item, index) => (
+                        <View
+                          key={`${item}-indicator`}
+                          className={`h-2 rounded-full ${index === activeIndex ? 'w-8 bg-white' : 'w-2 bg-white/35'}`}
+                        />
+                      ))}
+                    </View>
+                  </Pressable>
+                </MotiView>
+              </Pressable>
+            )
+          : null}
+      </AnimatePresence>
+    </RNModal>
+  );
+}
+
 function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps) {
   const [isCoverOpen, setIsCoverOpen] = useState(false);
 
@@ -92,7 +187,7 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
         <View className="absolute inset-0 bg-white/45" />
 
         <View className="absolute inset-x-4 top-10 flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()} className="rounded-full bg-white/90 p-2">
+          <Pressable onPress={() => router.back()} className="size-10 items-center justify-center rounded-2xl bg-white/90 pb-1">
             <Text className="text-xl text-neutral-900">←</Text>
           </Pressable>
           <Pressable onPress={onDelete} className="rounded-full bg-red-600/80 p-2">
@@ -212,20 +307,40 @@ function MetaInfoSection({ isLoading, languages, multiplayer }: MetaInfoSectionP
 }
 
 function ScreenshotSection({ items, title }: MediaSectionProps) {
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   if (items.length === 0)
     return null;
 
   return (
-    <View className="mb-6">
-      <Text className="mb-3 font-heading text-lg font-bold text-neutral-900">{title}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
-        {items.map(url => (
-          <View key={url} className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-white">
-            <Image source={url} className="size-full" contentFit="cover" />
-          </View>
-        ))}
-      </ScrollView>
-    </View>
+    <>
+      <View className="mb-6">
+        <Text className="mb-3 font-heading text-lg font-bold text-neutral-900">{title}</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
+          {items.map((url, index) => (
+            <Pressable
+              key={url}
+              onPress={() => {
+                setActiveIndex(index);
+                setIsViewerOpen(true);
+              }}
+              className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-white"
+            >
+              <Image source={url} className="size-full" contentFit="cover" />
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
+      <ScreenshotCarouselOverlay
+        isVisible={isViewerOpen}
+        items={items}
+        activeIndex={activeIndex}
+        onIndexChange={setActiveIndex}
+        onClose={() => setIsViewerOpen(false)}
+      />
+    </>
   );
 }
 
