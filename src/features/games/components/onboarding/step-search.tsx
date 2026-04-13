@@ -1,9 +1,11 @@
 import type { IgdbSuggestion, NewGamePayload } from '@/features/games/types';
 import { MotiView } from 'moti';
 import * as React from 'react';
+import { useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Image, Input, Pressable, Text } from '@/components/ui';
 import { useIgdbSearch } from '@/features/games/hooks';
+import { findExistingGame, getDuplicateGameMessage } from '@/lib/db';
 
 type Props = {
   form: NewGamePayload;
@@ -63,6 +65,10 @@ function PreviewCard({ form }: { form: NewGamePayload }) {
 
 export function StepSearch({ form, setForm }: Props) {
   const { results, isSearching, error, setResults, setError } = useIgdbSearch(form.title, form.igdb_id);
+  const duplicateGameMessage = useMemo(() => {
+    const existingGame = findExistingGame(form);
+    return existingGame ? getDuplicateGameMessage(existingGame) : null;
+  }, [form]);
 
   function applySuggestion(game: IgdbSuggestion) {
     setForm(prev => ({
@@ -102,6 +108,13 @@ export function StepSearch({ form, setForm }: Props) {
         {error && (
           <View className="mb-4 rounded-xl border border-danger-200 bg-danger-50 p-4">
             <Text className="text-danger-700">{error}</Text>
+          </View>
+        )}
+
+        {duplicateGameMessage && (
+          <View className="mb-4 rounded-xl border border-warning-300 bg-warning-50 p-4">
+            <Text className="font-semibold text-warning-800">Juego ya guardado</Text>
+            <Text className="mt-1 text-warning-700">{duplicateGameMessage}</Text>
           </View>
         )}
 

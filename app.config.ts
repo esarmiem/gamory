@@ -8,8 +8,8 @@ import 'tsx/cjs';
 // eslint-disable-next-line perfectionist/sort-imports
 import Env from './env';
 
-const EXPO_ACCOUNT_OWNER = 'obytes';
-const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044';
+const EXPO_ACCOUNT_OWNER = 'maleua';
+const EAS_PROJECT_ID = 'e3209bb7-f1e7-4744-9060-0b6912ef2b86';
 
 const iosFonts = [
   'node_modules/@expo-google-fonts/plus-jakarta-sans/400Regular/PlusJakartaSans_400Regular.ttf',
@@ -84,7 +84,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   description: `${Env.EXPO_PUBLIC_NAME} Mobile App`,
   owner: EXPO_ACCOUNT_OWNER,
   scheme: Env.EXPO_PUBLIC_SCHEME,
-  slug: 'obytesapp',
+  slug: 'gamory',
   version: Env.EXPO_PUBLIC_VERSION.toString(),
   orientation: 'portrait',
   icon: './icons/icon.png',
@@ -107,7 +107,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     adaptiveIcon: {
       foregroundImage: './icons/android/mipmap-xxxhdpi/ic_launcher_foreground.png',
-      backgroundColor: '#2E3C4B',
+      backgroundColor: '#FFFFFF',
     },
     package: Env.EXPO_PUBLIC_PACKAGE,
   },
@@ -119,7 +119,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#2E3C4B',
+        backgroundColor: '#FFFFFF',
         image: './icons/icon.png',
         imageWidth: 150,
       },
