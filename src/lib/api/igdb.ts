@@ -36,6 +36,13 @@ function normalizeCoverUrl(rawUrl?: string | null): string | null {
   return withProtocol.replace('t_thumb', 't_cover_big');
 }
 
+function normalizeHeroImageUrl(rawUrl?: string | null): string | null {
+  if (!rawUrl || rawUrl.trim() === '')
+    return null;
+  const withProtocol = rawUrl.startsWith('//') ? `https:${rawUrl}` : rawUrl;
+  return withProtocol.replace(/t_\w+/i, 't_1080p');
+}
+
 function releaseYearFromUnix(timestamp?: number | null): number | null {
   if (!timestamp)
     return null;
@@ -172,4 +179,38 @@ export async function getIgdbGameDetails(igdbId: number): Promise<IgdbGameDetail
     languages: languages as string[],
     multiplayer,
   };
+}
+
+export async function getIgdbOnboardingImage(gameName: string): Promise<string | null> {
+  const trimmed = gameName.trim();
+  if (!trimmed)
+    return null;
+
+  const token = await getIgdbToken();
+  const body = `search "${trimmed.replace(/"/g, '')}"; fields artworks.url,screenshots.url,cover.url; limit 1;`;
+
+  const response = await fetch('https://api.igdb.com/v4/games', {
+    method: 'POST',
+    headers: {
+      'Client-ID': EMBEDDED_IGDB_CLIENT_ID,
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json',
+      'Content-Type': 'text/plain',
+    },
+    body,
+  });
+
+  if (!response.ok) {
+    throw new Error(`IGDB devolvió un error: código ${response.status}`);
+  }
+
+  const rawItems = await response.json();
+  const game = rawItems[0];
+
+  const heroImage
+    = normalizeHeroImageUrl(game?.artworks?.[0]?.url)
+      || normalizeHeroImageUrl(game?.screenshots?.[0]?.url)
+      || normalizeHeroImageUrl(game?.cover?.url);
+
+  return heroImage;
 }

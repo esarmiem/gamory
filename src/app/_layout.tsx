@@ -5,7 +5,6 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -13,7 +12,6 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
 
 import { APIProvider } from '@/lib/api';
-import { initDatabase } from '@/lib/db';
 import { loadSelectedTheme } from '@/lib/hooks/use-selected-theme';
 // Import  global CSS file
 import '../global.css';
@@ -22,7 +20,7 @@ export { ErrorBoundary } from 'expo-router';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const unstable_settings = {
-  initialRouteName: '(app)',
+  initialRouteName: 'index',
 };
 
 loadSelectedTheme();
@@ -45,21 +43,14 @@ export default function RootLayout() {
     'SpaceGrotesk-Bold': require('@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf'),
   });
 
-  useEffect(() => {
-    try {
-      initDatabase();
-    }
-    catch (e) {
-      console.error('Failed to init DB', e);
-    }
-  }, []);
-
   if (!fontsLoaded)
     return null;
 
   return (
     <Providers>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="welcome" options={{ headerShown: false }} />
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
         <Stack.Screen name="game/[id]" options={{ presentation: 'modal', headerShown: false }} />
         <Stack.Screen name="add" options={{ presentation: 'modal', headerShown: false }} />

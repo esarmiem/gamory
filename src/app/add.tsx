@@ -2,7 +2,7 @@ import type { NewGamePayload } from '@/features/games/types';
 import { router } from 'expo-router';
 import * as React from 'react';
 import { useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { Platform, SafeAreaView, StatusBar, View } from 'react-native';
 import { Pressable, ProgressBar, Text } from '@/components/ui';
 import { StepReview, StepSearch, StepStatus } from '@/features/games/components/onboarding';
 import { useGames } from '@/features/games/hooks';
@@ -23,7 +23,12 @@ const initialForm: NewGamePayload = {
 
 function WizardHeader() {
   return (
-    <View className="flex-row items-center justify-between p-4">
+    <View
+      className="flex-row items-center justify-between p-4"
+      style={{
+        paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) + 8 : undefined,
+      }}
+    >
       <Pressable onPress={() => router.back()} className="p-2">
         <Text className="text-2xl text-neutral-600">←</Text>
       </Pressable>
