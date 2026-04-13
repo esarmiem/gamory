@@ -6,6 +6,13 @@ const DATABASE_NAME = 'gamory.sqlite';
 let db: SQLite.SQLiteDatabase | null = null;
 let isDatabaseInitialized = false;
 
+export class DuplicateGameError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'DuplicateGameError';
+  }
+}
+
 function getDatabase() {
   if (!db)
     db = SQLite.openDatabaseSync(DATABASE_NAME);
@@ -117,8 +124,51 @@ export function getGames(search: string = ''): Game[] {
   `, [`%${normalized}%`, `%${normalized}%`]);
 }
 
+function getStatusLabel(status: Game['status']) {
+  return status === 'in_progress' ? 'en curso' : 'completado';
+}
+
+export function getDuplicateGameMessage(existingGame: Game) {
+  return `"${existingGame.title}" ya está guardado como ${getStatusLabel(existingGame.status)} y no se puede agregar nuevamente.`;
+}
+
+export function findExistingGame(payload: NewGamePayload): Game | null {
+  const db = getDatabase();
+  const normalizedTitle = payload.title.trim();
+  const normalizedPlatform = payload.platform ? payload.platform.trim() : '';
+
+  if (!normalizedTitle)
+    return null;
+
+  if (payload.igdb_id !== null) {
+    const existingByIgdbId = db.getFirstSync<Game>(`
+      SELECT id, title, platform, rating, cover_url, genre, release_year, metacritic, igdb_id, platform_logo_url, status, quick_review
+      FROM games
+      WHERE igdb_id = ?
+      LIMIT 1
+    `, [payload.igdb_id]);
+
+    if (existingByIgdbId)
+      return existingByIgdbId;
+  }
+
+  return db.getFirstSync<Game>(`
+    SELECT id, title, platform, rating, cover_url, genre, release_year, metacritic, igdb_id, platform_logo_url, status, quick_review
+    FROM games
+    WHERE lower(trim(title)) = lower(trim(?))
+      AND lower(trim(platform)) = lower(trim(?))
+    LIMIT 1
+  `, [normalizedTitle, normalizedPlatform]);
+}
+
 export function addGame(payload: NewGamePayload): Game {
   const db = getDatabase();
+  const existingGame = findExistingGame(payload);
+
+  if (existingGame) {
+    throw new DuplicateGameError(getDuplicateGameMessage(existingGame));
+  }
+
   const result = db.runSync(`
     INSERT INTO games (title, platform, rating, cover_url, genre, release_year, metacritic, igdb_id, platform_logo_url, status, quick_review, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)

@@ -155,7 +155,7 @@ export default function AddGameScreen() {
       router.back();
     }
     catch (err) {
-      setError(String(err));
+      setError(err instanceof Error ? err.message : 'No se pudo guardar el juego.');
       setIsSaving(false);
     }
   };
