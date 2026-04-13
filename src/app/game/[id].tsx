@@ -1,9 +1,10 @@
 import type { Game } from '@/features/games/types';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
+import { AnimatePresence, MotiView } from 'moti';
 import { useEffect, useState } from 'react';
 
-import { ActivityIndicator, Linking, ScrollView, TextInput, View } from 'react-native';
+import { ActivityIndicator, Linking, Modal as RNModal, ScrollView, TextInput, View } from 'react-native';
 import { Button, Image, Modal, Pressable, Text, useModal } from '@/components/ui';
 import { useGames, useIgdbDetails } from '@/features/games/hooks';
 import { deleteGame, getGameById } from '@/lib/db';
@@ -26,47 +27,111 @@ type MediaSectionProps = {
   title: string;
 };
 
-function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps) {
+function CoverPreviewOverlay({
+  isVisible,
+  imageUrl,
+  onClose,
+}: {
+  isVisible: boolean;
+  imageUrl: string | null;
+  onClose: () => void;
+}) {
   return (
-    <View className="relative h-64 w-full bg-neutral-300">
-      {bannerUrl && (
-        <Image source={bannerUrl} className="absolute inset-0 size-full opacity-80" contentFit="cover" />
-      )}
-      <View className="absolute inset-0 bg-white/45" />
+    <RNModal
+      visible={isVisible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onClose}
+    >
+      <AnimatePresence>
+        {isVisible
+          ? (
+              <Pressable onPress={onClose} className="flex-1 items-center justify-center bg-black/80 px-6">
+                <MotiView
+                  from={{ opacity: 0, scale: 0.72 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.72 }}
+                  transition={{ type: 'timing', duration: 220 }}
+                  className="w-full max-w-[360px]"
+                >
+                  <Pressable onPress={onClose}>
+                    <View
+                      className="overflow-hidden rounded-[28px] bg-neutral-900 shadow-2xl"
+                      style={{ aspectRatio: 3 / 4 }}
+                    >
+                      {imageUrl
+                        ? (
+                            <Image source={imageUrl} className="size-full" contentFit="contain" />
+                          )
+                        : (
+                            <View className="flex-1 items-center justify-center">
+                              <Text className="text-center text-sm text-neutral-300">Sin imagen</Text>
+                            </View>
+                          )}
+                    </View>
+                  </Pressable>
+                </MotiView>
+              </Pressable>
+            )
+          : null}
+      </AnimatePresence>
+    </RNModal>
+  );
+}
 
-      <View className="absolute inset-x-4 top-10 flex-row items-center justify-between">
-        <Pressable onPress={() => router.back()} className="rounded-full bg-white/90 p-2">
-          <Text className="text-xl text-neutral-900">←</Text>
-        </Pressable>
-        <Pressable onPress={onDelete} className="rounded-full bg-red-600/80 p-2">
-          <Text className="font-heading text-sm font-bold text-white">Eliminar</Text>
-        </Pressable>
-      </View>
+function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps) {
+  const [isCoverOpen, setIsCoverOpen] = useState(false);
 
-      <View className="absolute -bottom-10 left-4 flex-row items-end">
-        <View className="h-32 w-24 overflow-hidden rounded-lg border-2 border-neutral-200 bg-neutral-200 shadow-xl">
-          {game.cover_url
-            ? (
-                <Image source={game.cover_url} className="size-full" contentFit="cover" />
-              )
-            : (
-                <View className="flex-1 items-center justify-center">
-                  <Text className="text-center text-xs text-neutral-500">Sin imagen</Text>
-                </View>
-              )}
+  return (
+    <>
+      <View className="relative h-64 w-full bg-neutral-300">
+        {bannerUrl && (
+          <Image source={bannerUrl} className="absolute inset-0 size-full opacity-80" contentFit="cover" />
+        )}
+        <View className="absolute inset-0 bg-white/45" />
+
+        <View className="absolute inset-x-4 top-10 flex-row items-center justify-between">
+          <Pressable onPress={() => router.back()} className="rounded-full bg-white/90 p-2">
+            <Text className="text-xl text-neutral-900">←</Text>
+          </Pressable>
+          <Pressable onPress={onDelete} className="rounded-full bg-red-600/80 p-2">
+            <Text className="font-heading text-sm font-bold text-white">Eliminar</Text>
+          </Pressable>
         </View>
-        <View className="mb-4 ml-4 flex-1 pr-8">
-          <Text className="font-heading text-2xl/7 font-bold text-black" numberOfLines={2} ellipsizeMode="tail">
-            {game.title}
-          </Text>
-          <Text className="mt-2 text-sm font-semibold text-neutral-700" numberOfLines={1}>
-            {developer}
-            {' '}
-            {game.release_year ? `• ${game.release_year}` : ''}
-          </Text>
+
+        <View className="absolute -bottom-10 left-4 flex-row items-end">
+          <Pressable onPress={() => setIsCoverOpen(true)}>
+            <View className="h-32 w-24 overflow-hidden rounded-lg border-2 border-neutral-200 bg-neutral-200 shadow-xl">
+              {game.cover_url
+                ? (
+                    <Image source={game.cover_url} className="size-full" contentFit="cover" />
+                  )
+                : (
+                    <View className="flex-1 items-center justify-center">
+                      <Text className="text-center text-xs text-neutral-500">Sin imagen</Text>
+                    </View>
+                  )}
+            </View>
+          </Pressable>
+          <View className="mb-4 ml-4 flex-1 pr-8">
+            <Text className="font-heading text-2xl/7 font-bold text-black" numberOfLines={2} ellipsizeMode="tail">
+              {game.title}
+            </Text>
+            <Text className="mt-2 text-sm font-semibold text-neutral-700" numberOfLines={1}>
+              {developer}
+              {' '}
+              {game.release_year ? `• ${game.release_year}` : ''}
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+      <CoverPreviewOverlay
+        isVisible={isCoverOpen}
+        imageUrl={game.cover_url}
+        onClose={() => setIsCoverOpen(false)}
+      />
+    </>
   );
 }
 
