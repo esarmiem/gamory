@@ -25,7 +25,9 @@ export const unstable_settings = {
 
 loadSelectedTheme();
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync().catch((error) => {
+  console.log('❌ [Error]: SplashScreen.preventAutoHideAsync failed', error);
+});
 // Set the animation options. This is optional.
 SplashScreen.setOptions({
   duration: 500,
@@ -42,8 +44,34 @@ export default function RootLayout() {
     'SpaceGrotesk-Medium': require('@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf'),
     'SpaceGrotesk-Bold': require('@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf'),
   });
+  const [isAppReady, setIsAppReady] = React.useState(false);
 
-  if (!fontsLoaded)
+  React.useEffect(() => {
+    if (!fontsLoaded)
+      return;
+
+    setIsAppReady(true);
+  }, [fontsLoaded]);
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      // Failsafe: avoid getting stuck on splash if a startup task stalls.
+      setIsAppReady(true);
+    }, 4000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isAppReady)
+      return;
+
+    SplashScreen.hideAsync().catch((error) => {
+      console.log('❌ [Error]: SplashScreen.hideAsync failed in RootLayout', error);
+    });
+  }, [isAppReady]);
+
+  if (!isAppReady)
     return null;
 
   return (

@@ -1,23 +1,11 @@
-import { Link, SplashScreen, Tabs } from 'expo-router';
+import { Link, Tabs } from 'expo-router';
 import * as React from 'react';
-import { useCallback, useEffect } from 'react';
 
 import { Image, Pressable, Text, View } from '@/components/ui';
 
 const logoGamory = require('../../../icons/icon.png');
 
 export default function TabLayout() {
-  const hideSplash = useCallback(async () => {
-    await SplashScreen.hideAsync();
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      hideSplash();
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [hideSplash]);
-
   return (
     <Tabs
       screenOptions={{
