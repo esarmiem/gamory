@@ -33,6 +33,7 @@
     "build:production:ios": "eas build --profile production --platform ios",
     "build:production:android": "eas build --profile production --platform android",
     "prepare": "husky",
+    "postinstall": "node scripts/fix-expo-dev-menu-ios.js",
     "app-release": "cross-env SKIP_BRANCH_PROTECTION=true np --no-publish --no-cleanup --no-release-draft",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
