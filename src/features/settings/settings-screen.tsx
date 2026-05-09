@@ -2,6 +2,7 @@ import Env from 'env';
 
 import {
   FocusAwareStatusBar,
+  SafeAreaView,
   ScrollView,
   Text,
   View,
