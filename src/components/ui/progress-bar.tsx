@@ -13,13 +13,14 @@ type Props = {
   progress?: number;
   initialProgress?: number;
   className?: string;
+  indicatorClassName?: string;
 };
 
 export type ProgressBarRef = {
   setProgress: (value: number) => void;
 };
 
-export function ProgressBar({ ref, progress: progressProp, initialProgress = 0, className = '' }: Props & { ref?: React.RefObject<ProgressBarRef | null> }) {
+export function ProgressBar({ ref, progress: progressProp, initialProgress = 0, className = '', indicatorClassName = 'bg-primary-500 dark:bg-primary-400' }: Props & { ref?: React.RefObject<ProgressBarRef | null> }) {
   const progress = useSharedValue<number>(progressProp ?? initialProgress ?? 0);
 
   React.useEffect(() => {
@@ -44,13 +45,12 @@ export function ProgressBar({ ref, progress: progressProp, initialProgress = 0, 
   const style = useAnimatedStyle(() => {
     return {
       width: `${progress.value}%`,
-      backgroundColor: '#000',
-      height: 2,
+      height: '100%',
     };
   });
   return (
-    <View className={twMerge(`bg-[#EAEAEA]`, className)}>
-      <Animated.View style={style} />
+    <View className={twMerge(`h-2 overflow-hidden bg-[#EAEAEA] dark:bg-charcoal-700`, className)}>
+      <Animated.View style={style} className={indicatorClassName} />
     </View>
   );
 }

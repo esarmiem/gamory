@@ -110,7 +110,7 @@ export default function WelcomeScreen() {
           onPress={handleNext}
           className="mt-auto h-14 items-center justify-center rounded-full bg-primary-400"
         >
-          <Text className="font-heading text-lg font-bold text-neutral-900">{buttonLabel}</Text>
+          <Text className="font-heading text-lg font-bold text-black">{buttonLabel}</Text>
         </Pressable>
       </View>
     </SafeAreaView>

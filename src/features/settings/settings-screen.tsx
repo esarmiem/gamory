@@ -13,15 +13,15 @@ import { ThemeItem } from './components/theme-item';
 
 export function SettingsScreen() {
   return (
-    <>
+    <SafeAreaView className="flex-1 bg-background dark:bg-charcoal-950">
       <FocusAwareStatusBar />
 
-      <ScrollView className="bg-neutral-200">
+      <ScrollView className="bg-background dark:bg-charcoal-950">
         <View className="flex-1 px-4 pt-6 pb-28">
-          <Text className="font-heading text-3xl font-bold text-neutral-900">
+          <Text className="font-heading text-3xl font-bold text-foreground dark:text-white">
             Ajustes
           </Text>
-          <Text className="mt-2 text-sm text-neutral-500">
+          <Text className="mt-2 text-sm text-muted-foreground dark:text-neutral-400">
             Personaliza idioma, tema y revisa la información de la app.
           </Text>
           <SettingsContainer title="settings.generale">
@@ -41,6 +41,6 @@ export function SettingsScreen() {
           </SettingsContainer>
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }

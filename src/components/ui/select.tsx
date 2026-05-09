@@ -12,10 +12,10 @@ import { Platform, Pressable, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { tv } from 'tailwind-variants';
 
-import { useUniwind } from 'uniwind';
 import colors from '@/components/ui/colors';
-
 import { CaretDown } from '@/components/ui/icons';
+
+import { useSelectedTheme } from '@/lib/hooks/use-selected-theme';
 import { Modal, useModal } from './modal';
 import { Text } from './text';
 
@@ -71,8 +71,8 @@ function keyExtractor(item: OptionType) {
 export function Options({ ref, options, onSelect, value, testID }: OptionsProps & { ref?: React.RefObject<BottomSheetModal | null> }) {
   const height = options.length * 70 + 100;
   const snapPoints = React.useMemo(() => [height], [height]);
-  const { theme } = useUniwind();
-  const isDark = theme === 'dark';
+  const { effectiveTheme } = useSelectedTheme();
+  const isDark = effectiveTheme === 'dark';
 
   const renderSelectItem = React.useCallback(
     ({ item }: { item: OptionType }) => (

@@ -38,6 +38,8 @@ import * as React from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Path, Svg } from 'react-native-svg';
+import { useSelectedTheme } from '@/lib/hooks/use-selected-theme';
+import colors from './colors';
 
 import { Text } from './text';
 
@@ -70,6 +72,8 @@ export function Modal({ ref, snapPoints: _snapPoints = ['60%'] as (string | numb
   );
   const modal = useModal();
   const snapPoints = React.useMemo(() => _snapPoints, [_snapPoints]);
+  const { effectiveTheme } = useSelectedTheme();
+  const isDark = effectiveTheme === 'dark';
 
   React.useImperativeHandle(
     ref,
@@ -93,6 +97,7 @@ export function Modal({ ref, snapPoints: _snapPoints = ['60%'] as (string | numb
       ref={modal.ref}
       index={0}
       snapPoints={snapPoints}
+      backgroundStyle={props.backgroundStyle || { backgroundColor: isDark ? colors.neutral[900] : colors.white }}
       backdropComponent={props.backdropComponent || renderBackdrop}
       enableDynamicSizing={false}
       handleComponent={renderHandleComponent}

@@ -1,22 +1,27 @@
 import { Link, Tabs } from 'expo-router';
 import * as React from 'react';
-
 import { Image, Pressable, Text, View } from '@/components/ui';
+
+import { useSelectedTheme } from '@/lib/hooks/use-selected-theme';
 
 const logoGamory = require('../../../icons/icon.png');
 
 export default function TabLayout() {
+  const { effectiveTheme } = useSelectedTheme();
+  const isDark = effectiveTheme === 'dark';
+  const bgColor = isDark ? '#0a0a0a' : '#ECECEC'; // background o charcoal-950
+
   return (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          backgroundColor: '#ECECEC',
+          backgroundColor: bgColor,
         },
         headerTitle: '',
         headerTitleAlign: 'left',
         headerShadowVisible: false,
         headerStyle: {
-          backgroundColor: '#ECECEC',
+          backgroundColor: bgColor,
         },
         headerLeft: () => <BrandHeader />,
         headerLeftContainerStyle: {
@@ -89,7 +94,7 @@ function BrandHeader() {
   return (
     <View className="flex-row items-center gap-3">
       <Image source={logoGamory} className="size-8 rounded-lg" contentFit="contain" />
-      <Text className="font-heading text-xl font-bold text-neutral-900">Gamory</Text>
+      <Text className="font-heading text-xl font-bold text-foreground dark:text-white">Gamory</Text>
     </View>
   );
 }
@@ -98,7 +103,7 @@ function CreateNewGameLink() {
   return (
     <Link href="/add" asChild>
       <Pressable className="h-8 min-w-[108px] items-center justify-center rounded-full bg-primary-400 px-4">
-        <Text className="text-center font-heading font-bold text-neutral-900">+ Agregar</Text>
+        <Text className="text-center font-heading font-bold text-black">+ Agregar</Text>
       </Pressable>
     </Link>
   );

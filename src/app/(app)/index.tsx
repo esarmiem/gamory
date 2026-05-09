@@ -19,7 +19,7 @@ function Stars({ value }: { value: number }) {
   return (
     <View className="mt-2 flex-row items-center gap-0.5">
       {[1, 2, 3, 4, 5].map(star => (
-        <Text key={star} className={star <= value ? 'text-primary-600' : 'text-neutral-300'}>
+        <Text key={star} className={star <= value ? 'text-primary-600 dark:text-primary-400' : 'text-muted dark:text-charcoal-700'}>
           ★
         </Text>
       ))}
@@ -39,9 +39,9 @@ function FilterChip({
   return (
     <Pressable
       onPress={onPress}
-      className={`rounded-full px-4 py-2 ${isActive ? 'bg-primary-400' : 'bg-white'}`}
+      className={`rounded-full px-4 py-2 ${isActive ? 'bg-primary-400' : 'bg-card dark:bg-charcoal-850'}`}
     >
-      <Text className={`font-heading text-xs font-bold uppercase ${isActive ? 'text-neutral-900' : 'text-neutral-500'}`}>
+      <Text className={`font-heading text-xs font-bold uppercase ${isActive ? 'text-black dark:text-black' : 'text-muted-foreground dark:text-neutral-400'}`}>
         {label}
       </Text>
     </Pressable>
@@ -54,7 +54,7 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
   return (
     <Pressable
       onPress={onPress}
-      className="mx-1.5 mb-4 flex-1 rounded-[24px] bg-white p-3"
+      className="mx-1.5 mb-4 flex-1 rounded-[24px] bg-card p-3 dark:bg-charcoal-850"
     >
       <View className="relative rounded-[20px] bg-[#171B2C] p-2">
         {game.cover_url
@@ -66,14 +66,14 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
               />
             )
           : (
-              <View className="aspect-3/4 items-center justify-center rounded-[16px] bg-neutral-300">
-                <Text className="text-sm text-neutral-500">Sin imagen</Text>
+              <View className="aspect-3/4 items-center justify-center rounded-[16px] bg-muted">
+                <Text className="text-sm text-muted-foreground">Sin imagen</Text>
               </View>
             )}
         {game.metacritic
           ? (
-              <View className="absolute top-3 right-3 rounded-xl bg-brand-100 px-2 py-1">
-                <Text className="text-[10px] font-bold text-brand-800">{game.metacritic}</Text>
+              <View className="absolute top-3 right-3 rounded-xl bg-brand-100 px-2 py-1 dark:bg-brand-500/20">
+                <Text className="text-[10px] font-bold text-brand-800 dark:text-brand-300">{game.metacritic}</Text>
               </View>
             )
           : null}
@@ -81,7 +81,7 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
 
       <View className="pt-3">
         <View className="flex-row items-start justify-between gap-3">
-          <Text className="flex-1 font-heading text-base font-semibold text-neutral-900" numberOfLines={1}>
+          <Text className="flex-1 font-heading text-base font-semibold text-foreground dark:text-white" numberOfLines={1}>
             {game.title}
           </Text>
           <View className="p-1">
@@ -95,7 +95,7 @@ function GameCard({ game, onPress }: { game: Game; onPress: () => void }) {
                 <Image source={platformLogo} className="mr-2 size-4 shrink-0" contentFit="contain" />
               )
             : null}
-          <Text className="flex-1 text-xs font-medium tracking-wide text-neutral-500 uppercase" numberOfLines={1}>
+          <Text className="flex-1 text-xs font-medium tracking-wide text-muted-foreground uppercase dark:text-neutral-400" numberOfLines={1}>
             {game.platform?.split(', ')[0] || '-'}
           </Text>
         </View>
@@ -124,7 +124,7 @@ export default function Dashboard() {
   );
 
   return (
-    <View className="flex-1 bg-neutral-200">
+    <View className="flex-1 bg-background dark:bg-charcoal-950">
       {isLoading && games.length === 0
         ? (
             <View className="flex-1 items-center justify-center">
@@ -152,13 +152,13 @@ export default function Dashboard() {
                     </Text>
                   </View>
 
-                  <View className="mt-5 flex-row items-center rounded-[18px] bg-white px-4">
+                  <View className="mt-5 flex-row items-center rounded-[18px] bg-card px-4 dark:bg-charcoal-850">
                     <SearchIcon color="#7D7D7D" />
                     <Input
                       placeholder="Buscar por nombre o plataforma"
                       value={search}
                       onChangeText={setSearch}
-                      className="flex-1 border-0 bg-transparent px-3 py-4 text-neutral-700"
+                      className="flex-1 border-0 bg-transparent px-3 py-4 text-foreground dark:text-white"
                     />
                   </View>
 
@@ -175,11 +175,11 @@ export default function Dashboard() {
                 </View>
               )}
               ListEmptyComponent={(
-                <View className="items-center rounded-[24px] bg-white p-8">
-                  <Text className="text-center text-base font-semibold text-neutral-900">
+                <View className="items-center rounded-[24px] bg-card p-8 dark:bg-charcoal-850">
+                  <Text className="text-center text-base font-semibold text-foreground dark:text-white">
                     No hay juegos para este filtro.
                   </Text>
-                  <Text className="mt-2 text-center text-sm text-neutral-500">
+                  <Text className="mt-2 text-center text-sm text-muted-foreground dark:text-neutral-400">
                     Prueba con otra búsqueda o agrega tu siguiente título desde el botón superior.
                   </Text>
                 </View>
