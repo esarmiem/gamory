@@ -2,8 +2,8 @@ import type { Game } from '@/features/games/types';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 
-import { ActivityIndicator, FlatList, View } from 'react-native';
-import { Image, Input, Pressable, Text } from '@/components/ui';
+import { ActivityIndicator, FlatList, TextInput, View } from 'react-native';
+import { Image, Pressable, Text } from '@/components/ui';
 import { CheckCircle, PlayCircle, Search as SearchIcon } from '@/components/ui/icons';
 import { useGames } from '@/features/games/hooks';
 
@@ -152,13 +152,14 @@ export default function Dashboard() {
                     </Text>
                   </View>
 
-                  <View className="mt-5 flex-row items-center rounded-[18px] bg-card px-4 dark:bg-charcoal-850">
+                  <View className="mt-5 h-12 flex-row items-center rounded-[18px] bg-card px-4 dark:bg-charcoal-850">
                     <SearchIcon color="#7D7D7D" />
-                    <Input
+                    <TextInput
                       placeholder="Buscar por nombre o plataforma"
+                      placeholderTextColor="#7D7D7D"
                       value={search}
                       onChangeText={setSearch}
-                      className="flex-1 border-0 bg-transparent px-3 py-4 text-foreground dark:text-white"
+                      className="flex-1 bg-transparent px-3 text-foreground dark:text-white"
                     />
                   </View>
 
