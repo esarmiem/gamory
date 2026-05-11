@@ -7,12 +7,13 @@ import { Image, Pressable, Text } from '@/components/ui';
 import { CheckCircle, PlayCircle, Search as SearchIcon } from '@/components/ui/icons';
 import { useGames } from '@/features/games/hooks';
 
-type FilterKey = 'all' | 'favorites' | 'inProgress';
+type FilterKey = 'all' | 'favorites' | 'inProgress' | 'completed';
 
 const filters: Array<{ key: FilterKey; label: string }> = [
   { key: 'all', label: 'Todos' },
   { key: 'favorites', label: 'Favoritos' },
   { key: 'inProgress', label: 'En curso' },
+  { key: 'completed', label: 'Completados' },
 ];
 
 function Stars({ value }: { value: number }) {
@@ -117,6 +118,8 @@ export default function Dashboard() {
           return game.rating === 5;
         if (activeFilter === 'inProgress')
           return game.status === 'in_progress';
+        if (activeFilter === 'completed')
+          return game.status === 'completed';
 
         return true;
       }),
