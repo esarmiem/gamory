@@ -1,8 +1,10 @@
 import { Link, Tabs } from 'expo-router';
 import * as React from 'react';
 import { Image, Pressable, Text, View } from '@/components/ui';
-
+import { Github } from '@/components/ui/icons';
+import { Modal, useModal } from '@/components/ui/modal';
 import { useSelectedTheme } from '@/lib/hooks/use-selected-theme';
+import { openLinkInBrowser } from '@/lib/utils';
 
 const logoGamory = require('../../../icons/icon.png');
 
@@ -91,11 +93,62 @@ export default function TabLayout() {
 }
 
 function BrandHeader() {
+  const { ref, present } = useModal();
+
   return (
-    <View className="flex-row items-center gap-3">
-      <Image source={logoGamory} className="size-8 rounded-lg" contentFit="contain" />
-      <Text className="font-heading text-xl font-bold text-foreground dark:text-white">Gamory</Text>
-    </View>
+    <>
+      <Pressable onPress={() => present()} className="flex-row items-center gap-3">
+        <Image source={logoGamory} className="size-8 rounded-lg" contentFit="contain" />
+        <Text className="font-heading text-xl font-bold text-foreground dark:text-white">Gamory</Text>
+      </Pressable>
+      <AboutModal ref={ref} />
+    </>
+  );
+}
+
+function AboutModal({ ref }: { ref: React.RefObject<any> }) {
+  return (
+    <Modal
+      ref={ref}
+      snapPoints={['70%']}
+      detached
+    >
+      <View className="flex flex-col items-center px-6 py-4">
+        <Image source={logoGamory} className="size-24 rounded-2xl" contentFit="contain" />
+        <Text className="mt-4 font-heading text-2xl font-bold text-foreground dark:text-white">
+          ¡Gracias por usar Gamory!
+        </Text>
+        <Text className="mt-3 text-center text-sm/relaxed text-gray-500 dark:text-gray-400">
+          Tu historial gamer en el bolsillo.
+          {'\n'}
+          Si te gusta la app, considera apoyar el desarrollo.
+        </Text>
+
+        <View className="mt-8 w-full gap-3">
+          <Pressable
+            onPress={() => openLinkInBrowser('https://github.com/esarmiem/gamory')}
+            className="flex-row items-center justify-center gap-2 rounded-xl bg-gray-200 px-4 py-3 dark:bg-neutral-800"
+          >
+            <Github color="#24292e" className="dark:fill-white" />
+            <Text className="text-center font-semibold text-gray-600 dark:text-white">GitHub</Text>
+          </Pressable>
+
+          <View className="mt-4 flex-row items-center justify-center gap-4 rounded-xl bg-gray-200 px-4 py-3 dark:bg-neutral-800">
+            <Text className="text-center text-sm text-gray-600 dark:text-gray-300">Dolar App</Text>
+            <Text className="text-center text-sm text-gray-600 dark:text-gray-300">$eldersarmiento</Text>
+          </View>
+
+          <View className="mt-4 flex-row items-center justify-center gap-4 rounded-xl bg-gray-200 px-4 py-3 dark:bg-neutral-800">
+            <Text className="text-center text-sm text-gray-600 dark:text-gray-300">
+              Llave bre-B (🇨🇴)
+            </Text>
+            <Text className="text-center text-sm text-gray-600 dark:text-gray-300">
+              @elder351
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
