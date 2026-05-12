@@ -57,7 +57,7 @@ function CoverPreviewOverlay({
                 >
                   <Pressable onPress={onClose}>
                     <View
-                      className="overflow-hidden rounded-[28px] bg-neutral-900 shadow-2xl"
+                      className="overflow-hidden rounded-[28px] bg-black shadow-2xl"
                       style={{ aspectRatio: 3 / 4 }}
                     >
                       {imageUrl
@@ -66,7 +66,7 @@ function CoverPreviewOverlay({
                           )
                         : (
                             <View className="flex-1 items-center justify-center">
-                              <Text className="text-center text-sm text-neutral-300">Sin imagen</Text>
+                              <Text className="text-center text-sm text-muted-foreground">Sin imagen</Text>
                             </View>
                           )}
                     </View>
@@ -148,7 +148,7 @@ function ScreenshotCarouselOverlay({
                       renderItem={({ item }) => (
                         <Pressable onPress={onClose} style={{ width: frameWidth }} className="items-center justify-center">
                           <View
-                            className="overflow-hidden rounded-[28px] bg-neutral-900 shadow-2xl"
+                            className="overflow-hidden rounded-[28px] bg-black shadow-2xl"
                             style={{ width: frameWidth - 16, aspectRatio: 16 / 10 }}
                           >
                             <Image source={item} className="size-full" contentFit="contain" />
@@ -180,40 +180,40 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
 
   return (
     <>
-      <View className="relative h-64 w-full bg-neutral-300">
+      <View className="relative h-64 w-full bg-muted">
         {bannerUrl && (
           <Image source={bannerUrl} className="absolute inset-0 size-full opacity-80" contentFit="cover" />
         )}
-        <View className="absolute inset-0 bg-white/45" />
+        <View className="absolute inset-0 bg-background/45" />
 
         <View className="absolute inset-x-4 top-10 flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()} className="size-10 items-center justify-center rounded-2xl bg-white/90 pb-1">
-            <Text className="text-xl text-neutral-900">←</Text>
+          <Pressable onPress={() => router.back()} className="size-10 items-center justify-center rounded-2xl bg-card/90 pb-1 dark:bg-charcoal-800/90">
+            <Text className="text-xl text-foreground dark:text-white">←</Text>
           </Pressable>
-          <Pressable onPress={onDelete} className="rounded-full bg-red-600/80 p-2">
-            <Text className="font-heading text-sm font-bold text-white">Eliminar</Text>
+          <Pressable onPress={onDelete} className="rounded-full bg-destructive/80 p-2">
+            <Text className="font-heading text-sm font-bold text-destructive-foreground dark:text-white">Eliminar</Text>
           </Pressable>
         </View>
 
         <View className="absolute -bottom-10 left-4 flex-row items-end">
           <Pressable onPress={() => setIsCoverOpen(true)}>
-            <View className="h-32 w-24 overflow-hidden rounded-lg border-2 border-neutral-200 bg-neutral-200 shadow-xl">
+            <View className="h-32 w-24 overflow-hidden rounded-lg border-2 border-border bg-muted shadow-xl dark:border-charcoal-700 dark:bg-charcoal-800">
               {game.cover_url
                 ? (
                     <Image source={game.cover_url} className="size-full" contentFit="cover" />
                   )
                 : (
                     <View className="flex-1 items-center justify-center">
-                      <Text className="text-center text-xs text-neutral-500">Sin imagen</Text>
+                      <Text className="text-center text-xs text-muted-foreground dark:text-neutral-400">Sin imagen</Text>
                     </View>
                   )}
             </View>
           </Pressable>
           <View className="mb-4 ml-4 flex-1 pr-8">
-            <Text className="font-heading text-2xl/7 font-bold text-black" numberOfLines={2} ellipsizeMode="tail">
+            <Text className="font-heading text-2xl/7 font-bold text-foreground dark:text-white" numberOfLines={2} ellipsizeMode="tail">
               {game.title}
             </Text>
-            <Text className="mt-2 text-sm font-semibold text-neutral-700" numberOfLines={1}>
+            <Text className="mt-2 text-sm font-semibold text-muted-foreground dark:text-neutral-400" numberOfLines={1}>
               {developer}
               {' '}
               {game.release_year ? `• ${game.release_year}` : ''}
@@ -233,21 +233,21 @@ function HeroSection({ bannerUrl, developer, game, onDelete }: HeroSectionProps)
 function InfoChips({ game }: { game: Game }) {
   return (
     <View className="mb-6 flex-row flex-wrap gap-2">
-      <View className="rounded-sm bg-primary-100 px-3 py-1">
-        <Text className="text-xs font-bold text-primary-800">{game.platform}</Text>
+      <View className="rounded-sm bg-primary-100 px-3 py-1 dark:bg-primary-400/20">
+        <Text className="text-xs font-bold text-primary-800 dark:text-primary-400">{game.platform}</Text>
       </View>
       {game.metacritic
         ? (
-            <View className="rounded-sm bg-success-100 px-3 py-1">
-              <Text className="text-xs font-bold text-success-700">
+            <View className="rounded-sm bg-success-100 px-3 py-1 dark:bg-success-400/20">
+              <Text className="text-xs font-bold text-success-700 dark:text-success-400">
                 Metacritic:
                 {game.metacritic}
               </Text>
             </View>
           )
         : null}
-      <View className="rounded-sm bg-white px-3 py-1">
-        <Text className="text-xs font-bold text-neutral-600">{game.genre || 'Sin género'}</Text>
+      <View className="rounded-sm bg-card px-3 py-1 dark:bg-charcoal-800">
+        <Text className="text-xs font-bold text-muted-foreground dark:text-neutral-300">{game.genre || 'Sin género'}</Text>
       </View>
     </View>
   );
@@ -258,16 +258,16 @@ function RatingCard({ rating, quickReview }: { rating: number | null; quickRevie
     return null;
 
   return (
-    <View className="mb-6 rounded-xl bg-white p-4">
-      <Text className="mb-2 text-sm text-neutral-500">Tu Calificación</Text>
+    <View className="mb-6 rounded-xl bg-card p-4 dark:bg-charcoal-850">
+      <Text className="mb-2 text-sm text-muted-foreground dark:text-neutral-400">Tu Calificación</Text>
       <View className="flex-row items-center">
-        <Text className="mr-2 text-2xl font-bold text-neutral-900">
+        <Text className="mr-2 text-2xl font-bold text-foreground dark:text-white">
           {rating}
           /5
         </Text>
         <View className="flex-row gap-1">
           {[1, 2, 3, 4, 5].map(star => (
-            <Text key={star} className={`text-2xl ${star <= rating ? 'text-primary-600' : 'text-neutral-300'}`}>
+            <Text key={star} className={`text-2xl ${star <= rating ? 'text-primary-600' : 'text-muted dark:text-charcoal-600'}`}>
               ★
             </Text>
           ))}
@@ -275,8 +275,8 @@ function RatingCard({ rating, quickReview }: { rating: number | null; quickRevie
       </View>
       {quickReview
         ? (
-            <View className="mt-4 border-t border-neutral-100 pt-4">
-              <Text className="text-sm text-neutral-600 italic">
+            <View className="mt-4 border-t border-border pt-4 dark:border-charcoal-700">
+              <Text className="text-sm text-muted-foreground italic dark:text-neutral-300">
                 "
                 {quickReview}
                 "
@@ -294,13 +294,13 @@ function MetaInfoSection({ isLoading, languages, multiplayer }: MetaInfoSectionP
 
   return (
     <View className="mb-6 flex-row flex-wrap justify-between gap-4">
-      <View className="min-w-[45%] flex-1 rounded-xl bg-white p-4">
-        <Text className="mb-1 text-xs text-neutral-500">Multijugador</Text>
-        <Text className="text-sm font-semibold text-neutral-900">{multiplayer}</Text>
+      <View className="min-w-[45%] flex-1 rounded-xl bg-card p-4 dark:bg-charcoal-850">
+        <Text className="mb-1 text-xs text-muted-foreground dark:text-neutral-400">Multijugador</Text>
+        <Text className="text-sm font-semibold text-foreground dark:text-white">{multiplayer}</Text>
       </View>
-      <View className="min-w-[45%] flex-1 rounded-xl bg-white p-4">
-        <Text className="mb-1 text-xs text-neutral-500">Idiomas</Text>
-        <Text className="text-sm font-semibold text-neutral-900" numberOfLines={2}>{languages}</Text>
+      <View className="min-w-[45%] flex-1 rounded-xl bg-card p-4 dark:bg-charcoal-850">
+        <Text className="mb-1 text-xs text-muted-foreground dark:text-neutral-400">Idiomas</Text>
+        <Text className="text-sm font-semibold text-foreground dark:text-white" numberOfLines={2}>{languages}</Text>
       </View>
     </View>
   );
@@ -316,7 +316,7 @@ function ScreenshotSection({ items, title }: MediaSectionProps) {
   return (
     <>
       <View className="mb-6">
-        <Text className="mb-3 font-heading text-lg font-bold text-neutral-900">{title}</Text>
+        <Text className="mb-3 font-heading text-lg font-bold text-foreground dark:text-white">{title}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {items.map((url, index) => (
             <Pressable
@@ -325,7 +325,7 @@ function ScreenshotSection({ items, title }: MediaSectionProps) {
                 setActiveIndex(index);
                 setIsViewerOpen(true);
               }}
-              className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-white"
+              className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-muted dark:bg-charcoal-800"
             >
               <Image source={url} className="size-full" contentFit="cover" />
             </Pressable>
@@ -350,12 +350,12 @@ function VideoSection({ items, title }: MediaSectionProps) {
 
   return (
     <View className="mb-6">
-      <Text className="mb-3 font-heading text-lg font-bold text-neutral-900">{title}</Text>
+      <Text className="mb-3 font-heading text-lg font-bold text-foreground dark:text-white">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
         {items.map(vid => (
           <Pressable
             key={vid}
-            className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-white"
+            className="mr-3 h-32 w-56 overflow-hidden rounded-xl bg-muted dark:bg-charcoal-800"
             onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${vid}`)}
           >
             <Image
@@ -388,27 +388,27 @@ function CompleteGameModal({
   return (
     <Modal ref={modal.ref} snapPoints={['80%']} title="Completar Juego">
       <View className="p-6">
-        <Text className="mb-4 text-center font-heading text-lg font-bold text-neutral-900">
+        <Text className="mb-4 text-center font-heading text-lg font-bold text-foreground dark:text-white">
           ¡Felicidades por terminar
           {' '}
           {game.title}
           !
         </Text>
 
-        <Text className="mb-2 text-center text-sm font-semibold text-neutral-500">
+        <Text className="mb-2 text-center text-sm font-semibold text-muted-foreground dark:text-neutral-400">
           ¿Qué calificación le das?
         </Text>
-        <View className="mb-6 flex-row justify-center gap-3">
+        <View className="mb-6 flex-row justify-center gap-2">
           {[1, 2, 3, 4, 5].map(star => (
             <Pressable key={star} onPress={() => setRating(star)} className="p-2">
-              <Text className={`text-4xl ${rating && star <= rating ? 'text-primary-500' : 'text-neutral-200'}`}>
+              <Text className={`text-4xl ${rating && star <= rating ? 'text-primary-500' : 'text-muted dark:text-charcoal-600'}`}>
                 ★
               </Text>
             </Pressable>
           ))}
         </View>
 
-        <Text className="mb-2 text-sm font-semibold text-neutral-500">
+        <Text className="mb-2 text-sm font-semibold text-muted-foreground dark:text-neutral-400">
           Reseña rápida (Opcional)
         </Text>
         <TextInput
@@ -418,7 +418,7 @@ function CompleteGameModal({
           placeholderTextColor="#9CA3AF"
           multiline
           numberOfLines={3}
-          className="mb-6 min-h-[80px] rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700 italic"
+          className="mb-6 min-h-[80px] rounded-xl border border-border bg-muted p-4 text-sm text-foreground italic dark:border-charcoal-700 dark:bg-charcoal-800 dark:text-white"
           style={{ textAlignVertical: 'top' }}
         />
 
@@ -426,8 +426,8 @@ function CompleteGameModal({
           label={isSaving ? 'Guardando...' : 'Marcar como Completado'}
           onPress={onCompleteGame}
           disabled={!rating || isSaving}
-          className={`rounded-full ${rating && !isSaving ? 'bg-primary-400' : 'bg-neutral-300'}`}
-          textClassName="text-neutral-900"
+          className={`rounded-full ${rating && !isSaving ? 'bg-primary-400' : 'bg-muted dark:bg-charcoal-700'}`}
+          textClassName="text-primary-900"
         />
       </View>
     </Modal>
@@ -455,8 +455,8 @@ export default function GameDetailScreen() {
 
   if (!game) {
     return (
-      <View className="flex-1 items-center justify-center bg-neutral-200">
-        <Text className="text-neutral-900">Juego no encontrado</Text>
+      <View className="flex-1 items-center justify-center bg-background">
+        <Text className="text-foreground">Juego no encontrado</Text>
         <Button label="Volver" onPress={() => router.back()} className="mt-4" />
       </View>
     );
@@ -495,7 +495,7 @@ export default function GameDetailScreen() {
 
   return (
     <BottomSheetModalProvider>
-      <View className="flex-1 bg-neutral-200">
+      <View className="flex-1 bg-background dark:bg-charcoal-950">
         <ScrollView contentContainerClassName="pb-10">
           <HeroSection bannerUrl={bannerUrl} developer={developer} game={game} onDelete={handleDelete} />
 
@@ -508,7 +508,7 @@ export default function GameDetailScreen() {
                 onPress={() => modal.present()}
                 className="mb-6 items-center justify-center rounded-xl bg-primary-400 p-4"
               >
-                <Text className="font-heading font-bold text-neutral-900">Completar juego</Text>
+                <Text className="font-heading font-bold text-black">Completar juego</Text>
               </Pressable>
             )}
 

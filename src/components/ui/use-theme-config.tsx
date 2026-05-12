@@ -3,9 +3,9 @@ import {
   DarkTheme as _DarkTheme,
   DefaultTheme,
 } from '@react-navigation/native';
-import { useUniwind } from 'uniwind';
-
 import colors from '@/components/ui/colors';
+
+import { useSelectedTheme } from '@/lib/hooks/use-selected-theme';
 
 const DarkTheme: Theme = {
   ..._DarkTheme,
@@ -32,9 +32,9 @@ const LightTheme: Theme = {
 };
 
 export function useThemeConfig() {
-  const { theme } = useUniwind();
+  const { effectiveTheme } = useSelectedTheme();
 
-  if (theme === 'dark')
+  if (effectiveTheme === 'dark')
     return DarkTheme;
 
   return LightTheme;

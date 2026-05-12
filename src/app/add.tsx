@@ -30,11 +30,11 @@ function WizardHeader() {
       }}
     >
       <Pressable onPress={() => router.back()} className="p-2">
-        <Text className="text-2xl text-neutral-600">←</Text>
+        <Text className="text-2xl text-muted-foreground dark:text-neutral-400">←</Text>
       </Pressable>
-      <Text className="font-heading text-lg font-bold text-neutral-900">Agregar juego</Text>
+      <Text className="font-heading text-lg font-bold text-foreground dark:text-white">Agregar juego</Text>
       <Pressable onPress={() => router.back()} className="p-2">
-        <Text className="text-xl text-neutral-600">✕</Text>
+        <Text className="text-xl text-muted-foreground dark:text-neutral-400">✕</Text>
       </Pressable>
     </View>
   );
@@ -52,18 +52,18 @@ function WizardProgress({ step }: { step: number }) {
   return (
     <View className="mb-6 px-6">
       <View className="mb-2 flex-row justify-between">
-        <Text className="text-[10px] font-bold tracking-[1.5px] text-neutral-500 uppercase">
+        <Text className="text-[10px] font-bold tracking-[1.5px] text-muted-foreground uppercase dark:text-neutral-400">
           PASO
           {' '}
           {step}
           {' '}
           DE 3
         </Text>
-        <Text className="text-[10px] font-bold tracking-[1.5px] text-primary-700 uppercase">
+        <Text className="text-[10px] font-bold tracking-[1.5px] text-primary-700 uppercase dark:text-primary-400">
           {text}
         </Text>
       </View>
-      <ProgressBar progress={value} className="h-1.5 rounded-full bg-neutral-200" />
+      <ProgressBar progress={value} className="h-1.5 rounded-full bg-muted dark:bg-charcoal-700" indicatorClassName="bg-primary-500 dark:bg-primary-400" />
     </View>
   );
 }
@@ -84,10 +84,10 @@ function WizardFooter({
   onSubmit: () => void;
 }) {
   return (
-    <View className="flex-row items-center justify-between bg-neutral-50 px-6 py-4">
+    <View className="flex-row items-center justify-between bg-card px-6 py-4 dark:bg-charcoal-850">
       {step > 1 && (
-        <Pressable onPress={onBack} className="rounded-full bg-neutral-200 px-6 py-4">
-          <Text className="font-heading text-xs font-bold text-neutral-700 uppercase">← Atrás</Text>
+        <Pressable onPress={onBack} className="rounded-full bg-muted px-6 py-4 dark:bg-charcoal-800">
+          <Text className="font-heading text-xs font-bold text-foreground uppercase dark:text-white">← Atrás</Text>
         </Pressable>
       )}
       {step <= 1 && <View />}
@@ -96,22 +96,22 @@ function WizardFooter({
         <Pressable
           onPress={onNext}
           disabled={!canGoNext}
-          className={`flex-row items-center gap-2 rounded-full px-8 py-4 ${canGoNext ? 'bg-primary-500' : 'bg-neutral-300'}`}
+          className={`flex-row items-center gap-2 rounded-full px-8 py-4 ${canGoNext ? 'bg-primary-500' : 'bg-muted dark:bg-charcoal-800'}`}
         >
-          <Text className={`font-heading text-xs font-bold uppercase ${canGoNext ? 'text-white' : 'text-neutral-500'}`}>Siguiente</Text>
-          <Text className={`font-bold ${canGoNext ? 'text-white' : 'text-neutral-500'}`}>→</Text>
+          <Text className={`font-heading text-xs font-bold uppercase ${canGoNext ? 'text-primary-900' : 'text-muted-foreground dark:text-neutral-500'}`}>Siguiente</Text>
+          <Text className={`font-bold ${canGoNext ? 'text-primary-900' : 'text-muted-foreground dark:text-neutral-500'}`}>→</Text>
         </Pressable>
       )}
       {step >= 3 && (
         <Pressable
           onPress={onSubmit}
           disabled={isSaving || !canGoNext}
-          className={`flex-row items-center gap-2 rounded-full px-8 py-4 ${canGoNext && !isSaving ? 'bg-primary-500' : 'bg-neutral-300'}`}
+          className={`flex-row items-center gap-2 rounded-full px-8 py-4 ${canGoNext && !isSaving ? 'bg-primary-500' : 'bg-muted dark:bg-charcoal-800'}`}
         >
-          <Text className={`font-heading text-xs font-bold uppercase ${canGoNext && !isSaving ? 'text-white' : 'text-neutral-500'}`}>
+          <Text className={`font-heading text-xs font-bold uppercase ${canGoNext && !isSaving ? 'text-primary-900' : 'text-muted-foreground dark:text-neutral-500'}`}>
             {isSaving ? 'Guardando...' : 'Guardar Juego'}
           </Text>
-          {canGoNext && !isSaving && <Text className="font-bold text-white">✓</Text>}
+          {canGoNext && !isSaving && <Text className="font-bold text-primary-900">✓</Text>}
         </Pressable>
       )}
     </View>
@@ -161,13 +161,13 @@ export default function AddGameScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-neutral-50">
+    <SafeAreaView className="flex-1 bg-background dark:bg-charcoal-950">
       <WizardHeader />
       <WizardProgress step={step} />
 
       {error && (
-        <View className="mx-4 mb-4 rounded-xl border border-danger-200 bg-danger-50 p-4">
-          <Text className="text-danger-700">{error}</Text>
+        <View className="mx-4 mb-4 rounded-xl border border-destructive bg-destructive/10 p-4">
+          <Text className="text-destructive">{error}</Text>
         </View>
       )}
 

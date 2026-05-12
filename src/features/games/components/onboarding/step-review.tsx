@@ -22,17 +22,17 @@ export function StepReview({ form, setForm }: Props) {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="px-4 pb-8">
 
         <View className="mb-6 flex-row gap-4">
-          <View className="relative h-32 w-24 overflow-hidden rounded-xl bg-neutral-300 shadow-sm">
+          <View className="relative h-32 w-24 overflow-hidden rounded-xl bg-muted shadow-sm dark:bg-charcoal-800">
             {form.cover_url && <Image source={form.cover_url} className="size-full" contentFit="cover" />}
             <View className="absolute top-2 left-2 rounded-sm bg-primary-400/90 px-2 py-0.5">
-              <Text className="text-[8px] font-bold text-neutral-900 uppercase">{isCompleted ? 'Terminado' : 'En curso'}</Text>
+              <Text className="text-[8px] font-bold text-primary-900 uppercase">{isCompleted ? 'Terminado' : 'En curso'}</Text>
             </View>
           </View>
           <View className="flex-1 pt-2">
-            <Text className="font-heading text-2xl/7 font-bold text-neutral-900" numberOfLines={3}>
+            <Text className="font-heading text-2xl/7 font-bold text-foreground dark:text-white" numberOfLines={3}>
               {form.title}
             </Text>
-            <Text className="mt-1 text-xs text-neutral-500">
+            <Text className="mt-1 text-xs text-muted-foreground dark:text-neutral-400">
               {form.genre ? form.genre.split(',')[0] : 'Sin género'}
               {' '}
               •
@@ -44,8 +44,8 @@ export function StepReview({ form, setForm }: Props) {
         {isCompleted
           ? (
               <MotiView from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} className="space-y-4">
-                <View className="mb-4 items-center rounded-[24px] bg-white p-6 shadow-sm">
-                  <Text className="mb-4 text-xs font-bold tracking-[2px] text-neutral-500 uppercase">
+                <View className="mb-4 items-center rounded-[24px] bg-card p-6 shadow-sm dark:bg-charcoal-850">
+                  <Text className="mb-4 text-xs font-bold tracking-[2px] text-muted-foreground uppercase dark:text-neutral-400">
                     Tu calificación
                   </Text>
                   <View className="flex-row gap-3">
@@ -55,24 +55,24 @@ export function StepReview({ form, setForm }: Props) {
                         onPress={() => setForm(prev => ({ ...prev, rating: star }))}
                         className="p-1"
                       >
-                        <Text className={`text-4xl ${form.rating && star <= form.rating ? 'text-primary-500' : 'text-neutral-200'}`}>
+                        <Text className={`text-4xl ${form.rating && star <= form.rating ? 'text-primary-500' : 'text-muted dark:text-charcoal-700'}`}>
                           ★
                         </Text>
                       </Pressable>
                     ))}
                   </View>
                   {form.rating && (
-                    <Text className="mt-4 font-heading text-lg font-bold text-primary-600">
+                    <Text className="mt-4 font-heading text-lg font-bold text-primary-600 dark:text-primary-400">
                       {form.rating === 5 ? '¡Obra Maestra!' : form.rating >= 4 ? '¡Excelente!' : form.rating === 3 ? 'Buen juego' : form.rating === 2 ? 'Regular' : 'No me gustó'}
                     </Text>
                   )}
                 </View>
 
-                <View className="rounded-[24px] bg-white p-6 shadow-sm">
-                  <Text className="mb-2 font-heading text-base font-bold text-neutral-900">
+                <View className="rounded-[24px] bg-card p-6 shadow-sm dark:bg-charcoal-850">
+                  <Text className="mb-2 font-heading text-base font-bold text-foreground dark:text-white">
                     Reseña rápida
                     {' '}
-                    <Text className="text-xs font-normal text-neutral-400">(Opcional)</Text>
+                    <Text className="text-xs font-normal text-muted-foreground dark:text-neutral-500">(Opcional)</Text>
                   </Text>
                   <TextInput
                     value={form.quick_review || ''}
@@ -81,18 +81,18 @@ export function StepReview({ form, setForm }: Props) {
                     placeholderTextColor="#9CA3AF"
                     multiline
                     numberOfLines={3}
-                    className="mt-2 min-h-[80px] text-sm text-neutral-700 italic"
+                    className="mt-2 min-h-[80px] text-sm text-foreground italic dark:text-white"
                     style={{ textAlignVertical: 'top' }}
                   />
                 </View>
               </MotiView>
             )
           : (
-              <MotiView from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} className="mt-8 items-center rounded-[24px] bg-white p-6 shadow-sm">
-                <Text className="text-center font-heading text-lg font-bold text-neutral-900">
+              <MotiView from={{ opacity: 0, translateY: 10 }} animate={{ opacity: 1, translateY: 0 }} className="mt-8 items-center rounded-[24px] bg-card p-6 shadow-sm dark:bg-charcoal-850">
+                <Text className="text-center font-heading text-lg font-bold text-foreground dark:text-white">
                   ¡Listo para empezar!
                 </Text>
-                <Text className="mt-2 text-center text-sm text-neutral-500">
+                <Text className="mt-2 text-center text-sm text-muted-foreground dark:text-neutral-400">
                   Guarda este juego en tu colección para hacerle seguimiento. Podrás calificarlo cuando lo termines.
                 </Text>
               </MotiView>
